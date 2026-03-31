@@ -1,0 +1,479 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sizzle LWC Components · SFS SE AI Lab</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --white: #ffffff; --off-white: #f8f9fc; --surface: #f2f4f8;
+    --border: #e4e8f0; --border-light: #eef0f5;
+    --text-primary: #0f1929; --text-secondary: #4a5568; --text-muted: #8a94a6;
+    --sf-blue: #0176d3; --sf-blue-light: #e8f4fd;
+    --sf-teal: #06a59a; --sf-teal-light: #e6f7f6;
+    --sf-indigo: #3a49d6; --sf-indigo-light: #eef0fd;
+    --sf-orange: #e07000; --sf-orange-light: #fef3e2;
+    --sf-green: #2e844a; --sf-green-light: #eaf5ec;
+    --sf-purple: #7b5ea7; --sf-purple-light: #f3eff9;
+    --radius: 16px; --radius-sm: 10px;
+    --shadow-sm: 0 1px 3px rgba(0,0,0,0.06); --shadow: 0 4px 16px rgba(0,0,0,0.07); --shadow-lg: 0 12px 40px rgba(0,0,0,0.10);
+  }
+  html { scroll-behavior: smooth; }
+  body { font-family: "Sora", sans-serif; background: var(--white); color: var(--text-primary); -webkit-font-smoothing: antialiased; }
+
+  nav { position: sticky; top: 0; z-index: 100; background: rgba(255,255,255,0.92); backdrop-filter: blur(12px); border-bottom: 1px solid var(--border-light); padding: 0 40px; height: 60px; display: flex; align-items: center; justify-content: space-between; }
+  .nav-back { display: flex; align-items: center; gap: 8px; font-size: 13px; font-weight: 500; color: var(--text-secondary); text-decoration: none; transition: color 0.15s; }
+  .nav-back:hover { color: var(--sf-green); }
+  .nav-logo { display: flex; align-items: center; gap: 8px; text-decoration: none; }
+  .nav-logo-mark { width: 28px; height: 28px; background: linear-gradient(135deg, var(--sf-blue), var(--sf-teal)); border-radius: 7px; display: flex; align-items: center; justify-content: center; font-size: 13px; }
+  .nav-wordmark { font-size: 14px; font-weight: 600; color: var(--text-primary); }
+  .nav-wordmark span { color: var(--sf-blue); }
+
+  /* HERO */
+  .hero { background: linear-gradient(170deg, var(--sf-green-light) 0%, var(--white) 60%); border-bottom: 1px solid var(--border); padding: 72px 40px 60px; }
+  .hero-inner { max-width: 960px; margin: 0 auto; }
+  .hero-label { font-size: 11px; font-weight: 600; font-family: "DM Mono", monospace; color: var(--sf-green); letter-spacing: 1.5px; text-transform: uppercase; margin-bottom: 16px; display: flex; align-items: center; gap: 8px; }
+  .hero-label::before { content: ""; width: 20px; height: 2px; background: var(--sf-green); border-radius: 2px; display: inline-block; }
+  h1 { font-size: clamp(30px, 4vw, 46px); font-weight: 700; letter-spacing: -1.5px; line-height: 1.1; margin-bottom: 16px; }
+  h1 em { font-style: normal; color: var(--sf-green); }
+  .hero-sub { font-size: 16px; color: var(--text-secondary); line-height: 1.65; max-width: 580px; }
+
+  /* LWC CARDS GRID */
+  .lwcs-section { max-width: 960px; margin: 0 auto; padding: 60px 40px 80px; }
+  .sec-eyebrow { font-size: 10px; font-weight: 600; font-family: "DM Mono", monospace; color: var(--text-muted); letter-spacing: 1.5px; text-transform: uppercase; margin-bottom: 6px; }
+  .sec-title { font-size: 22px; font-weight: 700; letter-spacing: -0.7px; margin-bottom: 28px; }
+
+  .lwc-grid { display: flex; flex-direction: column; gap: 24px; }
+
+  .lwc-card {
+    background: var(--white); border: 1px solid var(--border); border-radius: var(--radius);
+    overflow: hidden; box-shadow: var(--shadow-sm);
+    transition: box-shadow 0.2s, transform 0.2s;
+  }
+  .lwc-card:hover { box-shadow: var(--shadow-lg); transform: translateY(-2px); }
+
+  .lwc-card-inner { display: grid; grid-template-columns: 1fr 380px; min-height: 260px; }
+  .lwc-card-inner.flip { grid-template-columns: 380px 1fr; }
+  .lwc-card-inner.flip .lwc-preview { order: -1; }
+
+  .lwc-info { padding: 32px 32px; display: flex; flex-direction: column; justify-content: center; }
+  .lwc-tag { font-size: 10px; font-weight: 600; font-family: "DM Mono", monospace; padding: 3px 9px; border-radius: 20px; letter-spacing: 0.5px; text-transform: uppercase; display: inline-flex; margin-bottom: 14px; }
+  .tag-green { background: var(--sf-green-light); color: var(--sf-green); }
+  .tag-blue { background: var(--sf-blue-light); color: var(--sf-blue); }
+  .tag-purple { background: var(--sf-purple-light); color: var(--sf-purple); }
+  .tag-orange { background: var(--sf-orange-light); color: var(--sf-orange); }
+  .tag-indigo { background: var(--sf-indigo-light); color: var(--sf-indigo); }
+
+  .lwc-info h2 { font-size: 20px; font-weight: 700; letter-spacing: -0.5px; margin-bottom: 10px; }
+  .lwc-info p { font-size: 13.5px; color: var(--text-secondary); line-height: 1.65; margin-bottom: 16px; }
+  .lwc-objects { display: flex; gap: 6px; flex-wrap: wrap; }
+  .lwc-obj { font-size: 10px; font-weight: 500; font-family: "DM Mono", monospace; color: var(--text-muted); background: var(--surface); border: 1px solid var(--border-light); padding: 3px 8px; border-radius: 5px; }
+
+  /* LWC PREVIEW PANELS */
+  .lwc-preview { background: var(--surface); display: flex; align-items: center; justify-content: center; padding: 16px; border-left: 1px solid var(--border-light); }
+  .lwc-card-inner.flip .lwc-preview { border-left: none; border-right: 1px solid var(--border-light); }
+
+  /* Preview: Contract Dashboard mini */
+  .prev-contract { background: white; border-radius: 10px; width: 100%; max-width: 320px; border: 1px solid var(--border); overflow: hidden; box-shadow: var(--shadow); }
+  .prev-hdr { padding: 10px 14px; display: flex; align-items: center; justify-content: space-between; }
+  .prev-hdr-title { font-size: 11px; font-weight: 700; letter-spacing: -0.2px; }
+  .prev-badge { font-size: 9px; font-weight: 600; font-family: "DM Mono", monospace; padding: 2px 8px; border-radius: 10px; }
+  .prev-body { padding: 10px 14px; }
+  .prev-meta { font-size: 9px; color: var(--text-muted); margin-bottom: 8px; display: flex; gap: 8px; flex-wrap: wrap; }
+  .prev-meta span { background: var(--surface); padding: 2px 6px; border-radius: 4px; }
+  .prev-progress-row { display: flex; align-items: center; justify-content: space-between; margin-bottom: 4px; }
+  .prev-progress-label { font-size: 9px; font-weight: 600; }
+  .prev-progress-val { font-size: 11px; font-weight: 700; }
+  .prev-bar-wrap { height: 5px; background: var(--surface); border-radius: 3px; margin-bottom: 8px; }
+  .prev-bar { height: 100%; border-radius: 3px; }
+  .prev-divider { height: 1px; background: var(--border-light); margin: 8px 0; }
+  .prev-stat-row { display: flex; justify-content: space-between; }
+  .prev-stat { text-align: center; }
+  .prev-stat-v { font-size: 14px; font-weight: 700; }
+  .prev-stat-l { font-size: 8px; color: var(--text-muted); }
+  .prev-tabs { display: flex; border-top: 1px solid var(--border-light); }
+  .prev-tab { flex: 1; padding: 7px 0; font-size: 9px; font-weight: 600; text-align: center; color: var(--text-muted); }
+  .prev-tab.active { color: var(--sf-green); border-bottom: 2px solid var(--sf-green); }
+
+  /* Preview: Asset Explorer mini */
+  .prev-asset { background: white; border-radius: 10px; width: 100%; max-width: 320px; border: 1px solid var(--border); overflow: hidden; box-shadow: var(--shadow); }
+  .prev-asset-map { background: #e8f4fd; height: 110px; position: relative; overflow: hidden; }
+  .health-bubble { position: absolute; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 9px; font-weight: 800; }
+  .prev-asset-list { padding: 8px 12px; display: flex; flex-direction: column; gap: 5px; }
+  .prev-asset-row { display: flex; align-items: center; justify-content: space-between; }
+  .prev-asset-name { font-size: 10px; font-weight: 600; }
+  .prev-asset-loc { font-size: 8px; color: var(--text-muted); }
+  .prev-health { font-size: 10px; font-weight: 700; font-family: "DM Mono", monospace; }
+
+  /* Preview: Inventory mini */
+  .prev-inv { background: white; border-radius: 10px; width: 100%; max-width: 320px; border: 1px solid var(--border); overflow: hidden; box-shadow: var(--shadow); }
+  .prev-inv-metrics { display: grid; grid-template-columns: 1fr 1fr 1fr; padding: 10px 12px; gap: 6px; border-bottom: 1px solid var(--border-light); }
+  .prev-metric { text-align: center; }
+  .prev-metric-v { font-size: 18px; font-weight: 700; }
+  .prev-metric-l { font-size: 7px; color: var(--text-muted); }
+  .prev-inv-rows { padding: 8px 12px; display: flex; flex-direction: column; gap: 7px; }
+  .prev-inv-row { display: flex; flex-direction: column; gap: 2px; }
+  .prev-inv-name { display: flex; align-items: center; justify-content: space-between; }
+  .prev-inv-label { font-size: 10px; font-weight: 600; }
+  .prev-inv-badge { font-size: 8px; font-weight: 600; padding: 1px 6px; border-radius: 8px; }
+  .prev-inv-bar-wrap { height: 4px; background: var(--surface); border-radius: 2px; }
+  .prev-inv-bar { height: 100%; border-radius: 2px; }
+
+  /* Preview: Depot Repair */
+  .prev-depot { background: white; border-radius: 10px; width: 100%; max-width: 320px; border: 1px solid var(--border); overflow: hidden; box-shadow: var(--shadow); }
+  .prev-depot-hdr { background: var(--text-primary); padding: 10px 14px; display: flex; align-items: center; justify-content: space-between; }
+  .prev-depot-title { font-size: 10px; font-weight: 700; color: white; }
+  .prev-depot-stats { display: flex; gap: 8px; }
+  .prev-depot-stat { font-size: 9px; color: rgba(255,255,255,0.6); }
+  .prev-depot-stat span { color: white; font-weight: 700; }
+  .prev-stage-row { display: flex; padding: 8px 14px; gap: 4px; border-bottom: 1px solid var(--border-light); }
+  .prev-stage { font-size: 8px; font-weight: 600; font-family: "DM Mono", monospace; padding: 3px 6px; border-radius: 4px; }
+  .stage-active { background: var(--sf-blue-light); color: var(--sf-blue); }
+  .stage-done { background: var(--sf-green-light); color: var(--sf-green); }
+  .stage-todo { background: var(--surface); color: var(--text-muted); }
+  .prev-tool-row { padding: 8px 14px; display: flex; flex-direction: column; gap: 5px; }
+  .prev-tool-item { display: flex; align-items: center; justify-content: space-between; }
+  .prev-tool-id { font-size: 9px; font-family: "DM Mono", monospace; color: var(--text-muted); }
+  .prev-tool-status { font-size: 9px; font-weight: 600; padding: 1px 7px; border-radius: 8px; }
+  .prev-tool-progress { height: 3px; background: var(--surface); border-radius: 2px; margin-top: 2px; }
+  .prev-tool-bar { height: 100%; border-radius: 2px; background: var(--sf-blue); }
+
+  /* Preview: Site Explorer */
+  .prev-site { background: white; border-radius: 10px; width: 100%; max-width: 320px; border: 1px solid var(--border); overflow: hidden; box-shadow: var(--shadow); }
+  .prev-site-map { background: linear-gradient(135deg, #e8f4fd, #d4edf9); height: 100px; position: relative; overflow: hidden; }
+  .map-pin { position: absolute; width: 14px; height: 14px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 7px; border: 2px solid white; box-shadow: 0 1px 4px rgba(0,0,0,0.2); }
+  .prev-site-list { padding: 8px 12px; display: flex; flex-direction: column; gap: 5px; }
+  .prev-site-item { display: flex; align-items: center; gap: 6px; }
+  .site-dot { width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0; }
+  .site-name { font-size: 10px; font-weight: 600; flex: 1; }
+  .site-status { font-size: 8px; font-weight: 600; padding: 1px 6px; border-radius: 8px; }
+
+  /* LOOP BANNER */
+  .loop-banner { background: var(--text-primary); border-radius: var(--radius); padding: 32px 36px; color: white; margin-top: 12px; }
+  .loop-eyebrow { font-size: 10px; font-weight: 600; font-family: "DM Mono", monospace; opacity: 0.5; letter-spacing: 1.5px; text-transform: uppercase; margin-bottom: 10px; }
+  .loop-banner h3 { font-size: 19px; font-weight: 700; letter-spacing: -0.5px; margin-bottom: 8px; }
+  .loop-banner p { font-size: 13.5px; opacity: 0.7; line-height: 1.6; }
+
+  footer { text-align: center; padding: 36px 40px; border-top: 1px solid var(--border-light); }
+  footer p { font-size: 12px; color: var(--text-muted); font-family: "DM Mono", monospace; margin-bottom: 4px; }
+
+  @media (max-width: 760px) {
+    nav { padding: 0 20px; }
+    .hero { padding: 50px 20px 50px; }
+    .lwcs-section { padding: 40px 20px 60px; }
+    .lwc-card-inner, .lwc-card-inner.flip { grid-template-columns: 1fr; }
+    .lwc-preview { border-left: none; border-top: 1px solid var(--border-light); min-height: 220px; }
+    .lwc-card-inner.flip .lwc-preview { order: 1; border-right: none; }
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="index.html" class="nav-back">&#8592; SE AI Lab</a>
+  <a href="index.html" class="nav-logo">
+    <div class="nav-logo-mark">&#9889;</div>
+    <span class="nav-wordmark">SFS <span>SE AI Lab</span></span>
+  </a>
+</nav>
+
+<div class="hero">
+  <div class="hero-inner">
+    <div class="hero-label">LWC &middot; Adam Bartos</div>
+    <h1>LWCs that<br><em>win rooms.</em></h1>
+    <p class="hero-sub">Custom Lightning Web Components built with Claude + Cursor across ASLM and commercial HVAC demos. Five components that stick in people&rsquo;s heads after the meeting.</p>
+  </div>
+</div>
+
+<div class="lwcs-section">
+  <div class="sec-eyebrow">Components</div>
+  <div class="sec-title">Five components, two demo contexts</div>
+
+  <div class="lwc-grid">
+
+    <!-- 1. Contract Dashboard -->
+    <div class="lwc-card">
+      <div class="lwc-card-inner">
+        <div class="lwc-info">
+          <span class="lwc-tag tag-green">ASLM Customer Desktop</span>
+          <h2>Contract Dashboard</h2>
+          <p>Multi-zone contract intelligence on the Service Contract record page. Coverage status, warranty countdown, division revenue breakdown, PM compliance, and open work order tracking &mdash; all surfaced before the conversation starts.</p>
+          <div class="lwc-objects">
+            <span class="lwc-obj">ServiceContract</span>
+            <span class="lwc-obj">ContractLineItem</span>
+            <span class="lwc-obj">Entitlement</span>
+          </div>
+        </div>
+        <div class="lwc-preview">
+          <div class="prev-contract">
+            <div class="prev-hdr" style="border-left:4px solid var(--sf-green);">
+              <div>
+                <div style="font-size:8px;color:var(--text-muted);font-family:'DM Mono',monospace;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:2px;">Service Contract</div>
+                <div class="prev-hdr-title">Alcami MCW &mdash; Full Coverage 2025</div>
+              </div>
+              <span class="prev-badge" style="background:var(--sf-green-light);color:var(--sf-green);">Full Coverage</span>
+            </div>
+            <div class="prev-body">
+              <div class="prev-meta">
+                <span>Multi-Trade</span><span>Monthly Billing</span><span>Renewal: In Progress</span>
+              </div>
+              <div class="prev-progress-row">
+                <span class="prev-progress-label">643 Days Left</span>
+                <span class="prev-progress-val" style="color:var(--sf-green);">$136,000</span>
+              </div>
+              <div class="prev-bar-wrap"><div class="prev-bar" style="width:59%;background:var(--sf-green);"></div></div>
+              <div class="prev-divider"></div>
+              <div style="display:flex;flex-direction:column;gap:5px;">
+                <div style="display:flex;align-items:center;justify-content:space-between;">
+                  <span style="font-size:9px;font-weight:600;">HVAC</span>
+                  <div style="flex:1;margin:0 8px;height:4px;background:var(--surface);border-radius:2px;overflow:hidden;"><div style="width:70%;height:100%;background:var(--sf-blue);border-radius:2px;"></div></div>
+                  <span style="font-size:9px;color:var(--text-muted);">$76,400</span>
+                </div>
+                <div style="display:flex;align-items:center;justify-content:space-between;">
+                  <span style="font-size:9px;font-weight:600;">Boiler</span>
+                  <div style="flex:1;margin:0 8px;height:4px;background:var(--surface);border-radius:2px;overflow:hidden;"><div style="width:40%;height:100%;background:var(--sf-teal);border-radius:2px;"></div></div>
+                  <span style="font-size:9px;color:var(--text-muted);">$23,200</span>
+                </div>
+              </div>
+              <div class="prev-divider"></div>
+              <div class="prev-stat-row">
+                <div class="prev-stat"><div class="prev-stat-v" style="color:var(--sf-blue);">17</div><div class="prev-stat-l">PMs Scheduled</div></div>
+                <div class="prev-stat"><div class="prev-stat-v" style="color:var(--sf-green);">14</div><div class="prev-stat-l">PMs Complete</div></div>
+                <div class="prev-stat"><div class="prev-stat-v" style="color:var(--sf-orange);">82%</div><div class="prev-stat-l">Compliance</div></div>
+              </div>
+            </div>
+            <div class="prev-tabs">
+              <div class="prev-tab active">Overview</div>
+              <div class="prev-tab">Details</div>
+              <div class="prev-tab">Line Items</div>
+              <div class="prev-tab">Activity</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 2. Root Asset Explorer -->
+    <div class="lwc-card">
+      <div class="lwc-card-inner flip">
+        <div class="lwc-info">
+          <span class="lwc-tag tag-blue">ASLM Customer Desktop</span>
+          <h2>Root Asset Explorer</h2>
+          <p>Global asset health dashboard with interactive heat map. Color-coded health bubbles across all locations, filterable by facility, equipment type, and status. Right-panel facility list sorted by health with alerting indicators.</p>
+          <div class="lwc-objects">
+            <span class="lwc-obj">Asset</span>
+            <span class="lwc-obj">Location</span>
+            <span class="lwc-obj">lightning-map</span>
+            <span class="lwc-obj">AssetRelationship</span>
+          </div>
+        </div>
+        <div class="lwc-preview">
+          <div class="prev-asset">
+            <div class="prev-hdr" style="border-bottom:1px solid var(--border-light);justify-content:space-between;">
+              <div class="prev-hdr-title">Asset Explorer &mdash; Alcami Corp</div>
+              <div style="display:flex;gap:4px;">
+                <span style="font-size:8px;background:var(--sf-blue-light);color:var(--sf-blue);padding:2px 6px;border-radius:8px;font-weight:600;">164 Assets</span>
+                <span style="font-size:8px;background:var(--sf-orange-light);color:var(--sf-orange);padding:2px 6px;border-radius:8px;font-weight:600;">57 Critical</span>
+              </div>
+            </div>
+            <div class="prev-asset-map">
+              <div class="health-bubble" style="width:28px;height:28px;background:rgba(6,165,154,0.2);border:1.5px solid #06a59a;color:#06a59a;left:16%;top:18%;">87</div>
+              <div class="health-bubble" style="width:26px;height:26px;background:rgba(224,112,0,0.2);border:1.5px solid #e07000;color:#e07000;left:42%;top:38%;">52</div>
+              <div class="health-bubble" style="width:24px;height:24px;background:rgba(1,118,211,0.2);border:1.5px solid #0176d3;color:#0176d3;left:64%;top:14%;">83</div>
+              <div class="health-bubble" style="width:22px;height:22px;background:rgba(192,57,43,0.25);border:1.5px solid #c0392b;color:#c0392b;left:26%;top:65%;">28</div>
+              <div class="health-bubble" style="width:26px;height:26px;background:rgba(46,132,74,0.2);border:1.5px solid #2e844a;color:#2e844a;left:56%;top:60%;">81</div>
+              <div class="health-bubble" style="width:20px;height:20px;background:rgba(58,73,214,0.2);border:1.5px solid #3a49d6;color:#3a49d6;left:80%;top:44%;">78</div>
+            </div>
+            <div class="prev-asset-list">
+              <div class="prev-asset-row">
+                <div><div class="prev-asset-name">Boiler Skid - Main Floor</div><div class="prev-asset-loc">Alcami MCW · Boiler</div></div>
+                <span class="prev-health" style="color:#c0392b;">28 &#9888;</span>
+              </div>
+              <div class="prev-asset-row">
+                <div><div class="prev-asset-name">Cleaver Brooks Boiler</div><div class="prev-asset-loc">Alcami MCW · West Core</div></div>
+                <span class="prev-health" style="color:#e07000;">52 &#9650;</span>
+              </div>
+              <div class="prev-asset-row">
+                <div><div class="prev-asset-name">Trane Fan Coil</div><div class="prev-asset-loc">Alcami MCW · West Core</div></div>
+                <span class="prev-health" style="color:var(--sf-green);">81 &#10003;</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 3. Inventory Dashboard -->
+    <div class="lwc-card">
+      <div class="lwc-card-inner">
+        <div class="lwc-info">
+          <span class="lwc-tag tag-purple">ASLM Customer Desktop</span>
+          <h2>Inventory Dashboard</h2>
+          <p>Inventory management insights with replenishment automation. Alert metrics for items below minimum, pending transfers, and active policies. 2-column replenishment policy grid with min/max threshold bars and reorder triggers across supply house and truck stock locations.</p>
+          <div class="lwc-objects">
+            <span class="lwc-obj">ProductItem</span>
+            <span class="lwc-obj">Location</span>
+            <span class="lwc-obj">ProductTransfer</span>
+          </div>
+        </div>
+        <div class="lwc-preview">
+          <div class="prev-inv">
+            <div class="prev-hdr" style="border-bottom:1px solid var(--border-light);border-left:4px solid var(--sf-purple);">
+              <div class="prev-hdr-title">Parts Inventory &mdash; All Locations</div>
+            </div>
+            <div class="prev-inv-metrics">
+              <div class="prev-metric"><div class="prev-metric-v" style="color:var(--sf-orange);">4</div><div class="prev-metric-l">Below Min</div></div>
+              <div class="prev-metric"><div class="prev-metric-v" style="color:var(--sf-blue);">1</div><div class="prev-metric-l">Pending</div></div>
+              <div class="prev-metric"><div class="prev-metric-v" style="color:var(--sf-green);">6</div><div class="prev-metric-l">Policies</div></div>
+            </div>
+            <div style="padding:6px 12px;font-size:8px;font-family:'DM Mono',monospace;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.5px;border-bottom:1px solid var(--border-light);">Replenishment Policies</div>
+            <div class="prev-inv-rows">
+              <div class="prev-inv-row">
+                <div class="prev-inv-name"><span class="prev-inv-label">Air Filter 16x25x1</span><span class="prev-inv-badge" style="background:var(--sf-orange-light);color:var(--sf-orange);">Reorder ↑</span></div>
+                <div style="font-size:8px;color:var(--text-muted);margin-bottom:2px;">Supply House · Min:20 · Max:100</div>
+                <div class="prev-inv-bar-wrap"><div class="prev-inv-bar" style="width:20%;background:var(--sf-orange);"></div></div>
+              </div>
+              <div class="prev-inv-row">
+                <div class="prev-inv-name"><span class="prev-inv-label">R-22 Refrigerant</span><span class="prev-inv-badge" style="background:var(--sf-green-light);color:var(--sf-green);">Active ✓</span></div>
+                <div style="font-size:8px;color:var(--text-muted);margin-bottom:2px;">Supply House · Min:10 · Max:30</div>
+                <div class="prev-inv-bar-wrap"><div class="prev-inv-bar" style="width:55%;background:var(--sf-green);"></div></div>
+              </div>
+              <div class="prev-inv-row">
+                <div class="prev-inv-name"><span class="prev-inv-label">Fan Belt 1/2" x 48"</span><span class="prev-inv-badge" style="background:var(--sf-orange-light);color:var(--sf-orange);">Reorder ↑</span></div>
+                <div style="font-size:8px;color:var(--text-muted);margin-bottom:2px;">Truck Stock · Min:3 · Max:12</div>
+                <div class="prev-inv-bar-wrap"><div class="prev-inv-bar" style="width:15%;background:var(--sf-orange);"></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 4. Depot Repair Tracker -->
+    <div class="lwc-card">
+      <div class="lwc-card-inner flip">
+        <div class="lwc-info">
+          <span class="lwc-tag tag-indigo">ASLM Depot Repair Desktop</span>
+          <h2>Depot Repair Tracker + Scanner</h2>
+          <p>Full lifecycle view with integrated barcode scanner. Batch-level work order tracking with per-tool stage progression, independent repair and calibration paths, tech assignment with reassign, work step progress bars, and action buttons. Built for depot bench environments.</p>
+          <div class="lwc-objects">
+            <span class="lwc-obj">WorkOrder</span>
+            <span class="lwc-obj">WOLI</span>
+            <span class="lwc-obj">Web Audio API</span>
+            <span class="lwc-obj">ServiceAppointment</span>
+          </div>
+        </div>
+        <div class="lwc-preview">
+          <div class="prev-depot">
+            <div class="prev-depot-hdr">
+              <div class="prev-depot-title">Depot Repair &mdash; WO-00284</div>
+              <div class="prev-depot-stats">
+                <div class="prev-depot-stat"><span>0</span> Days</div>
+                <div class="prev-depot-stat"><span>0/3</span> Done</div>
+              </div>
+            </div>
+            <div class="prev-stage-row">
+              <span class="prev-stage stage-active">Intake</span>
+              <span class="prev-stage stage-todo">Repair</span>
+              <span class="prev-stage stage-todo">Calibrate</span>
+              <span class="prev-stage stage-todo">Quality</span>
+              <span class="prev-stage stage-todo">Ship</span>
+            </div>
+            <div style="padding:6px 14px 4px;font-size:8px;color:var(--text-muted);font-family:'DM Mono',monospace;text-transform:uppercase;letter-spacing:0.5px;">Tools in Batch</div>
+            <div class="prev-tool-row">
+              <div class="prev-tool-item">
+                <div>
+                  <div class="prev-tool-id">#00000001 &mdash; Dead battery</div>
+                  <div class="prev-tool-progress"><div class="prev-tool-bar" style="width:0%"></div></div>
+                </div>
+                <span class="prev-tool-status" style="background:var(--sf-blue-light);color:var(--sf-blue);">Intake</span>
+              </div>
+              <div class="prev-tool-item" style="margin-top:6px;">
+                <div>
+                  <div class="prev-tool-id">#00000002 &mdash; Calibration needed</div>
+                  <div class="prev-tool-progress"><div class="prev-tool-bar" style="width:0%"></div></div>
+                </div>
+                <span class="prev-tool-status" style="background:var(--sf-indigo-light);color:var(--sf-indigo);">Calibrate</span>
+              </div>
+              <div class="prev-tool-item" style="margin-top:6px;">
+                <div>
+                  <div class="prev-tool-id">#00000003 &mdash; Complete</div>
+                  <div class="prev-tool-progress"><div class="prev-tool-bar" style="width:100%;background:var(--sf-green);"></div></div>
+                </div>
+                <span class="prev-tool-status" style="background:var(--sf-green-light);color:var(--sf-green);">Done ✓</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 5. Site Explorer -->
+    <div class="lwc-card">
+      <div class="lwc-card-inner">
+        <div class="lwc-info">
+          <span class="lwc-tag tag-orange">ASLM Customer Mobile</span>
+          <h2>Site Explorer</h2>
+          <p>Mobile-first asset navigation for field technicians. Map view of all equipment at the service location with tap-to-drill asset cards, service history, warranty flags, and PM status. Built for FSL Mobile with offline support.</p>
+          <div class="lwc-objects">
+            <span class="lwc-obj">Asset</span>
+            <span class="lwc-obj">ServiceTerritory</span>
+            <span class="lwc-obj">FSL Mobile</span>
+            <span class="lwc-obj">Offline-ready</span>
+          </div>
+        </div>
+        <div class="lwc-preview">
+          <div class="prev-site">
+            <div class="prev-hdr" style="border-bottom:1px solid var(--border-light);">
+              <div><div class="prev-hdr-title">Site Explorer</div><div style="font-size:8px;color:var(--text-muted);">Alcami Corp · Building A</div></div>
+              <span class="prev-badge" style="background:var(--sf-orange-light);color:var(--sf-orange);">Tap pins to explore</span>
+            </div>
+            <div class="prev-site-map">
+              <div class="map-pin" style="background:#c0392b;left:22%;top:28%;">&#9650;</div>
+              <div class="map-pin" style="background:#0176d3;left:48%;top:52%;">&#9679;</div>
+              <div class="map-pin" style="background:#2e844a;left:66%;top:22%;">&#9679;</div>
+              <div class="map-pin" style="background:#e07000;left:38%;top:72%;">!</div>
+              <div class="map-pin" style="background:#2e844a;left:76%;top:62%;">&#9679;</div>
+            </div>
+            <div class="prev-site-list">
+              <div class="prev-site-item">
+                <div class="site-dot" style="background:#c0392b;"></div>
+                <div class="site-name">Carrier 30XA Chiller #1</div>
+                <span class="site-status" style="background:#fde8e8;color:#c0392b;">Alert</span>
+              </div>
+              <div class="prev-site-item">
+                <div class="site-dot" style="background:#0176d3;"></div>
+                <div class="site-name">CB CBLE Boiler</div>
+                <span class="site-status" style="background:var(--sf-blue-light);color:var(--sf-blue);">OK</span>
+              </div>
+              <div class="prev-site-item">
+                <div class="site-dot" style="background:#e07000;"></div>
+                <div class="site-name">DDC Panel &mdash; Lobby</div>
+                <span class="site-status" style="background:var(--sf-orange-light);color:var(--sf-orange);">PM Due</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- end lwc-grid -->
+
+  <div class="loop-banner" style="margin-top:32px;">
+    <div class="loop-eyebrow">The loop that compounds</div>
+    <h3>Every demo makes the next one faster.</h3>
+    <p>The rules files grow. The prompt patterns sharpen. The confidence scores start higher. This isn&rsquo;t a shortcut &mdash; it&rsquo;s a system. Each LWC built with Claude + Cursor becomes a reference for the next one.</p>
+  </div>
+
+</div>
+
+<footer>
+  <p>Built by Adam Bartos &middot; SFS SE AI Lab &middot; 2026</p>
+  <p>SE Peers Only &middot; Internal Use</p>
+</footer>
+</body>
+</html>

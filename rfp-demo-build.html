@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Orchestrated RFP Demo Build · SFS SE AI Lab</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --white: #ffffff; --off-white: #f8f9fc; --surface: #f2f4f8;
+    --border: #e4e8f0; --border-light: #eef0f5;
+    --text-primary: #0f1929; --text-secondary: #4a5568; --text-muted: #8a94a6;
+    --sf-blue: #0176d3; --sf-blue-dark: #014486; --sf-blue-light: #e8f4fd;
+    --sf-teal: #06a59a; --sf-teal-light: #e6f7f6;
+    --sf-indigo: #3a49d6; --sf-indigo-light: #eef0fd;
+    --sf-orange: #e07000; --sf-orange-light: #fef3e2;
+    --sf-green: #2e844a; --sf-green-light: #eaf5ec;
+    --radius: 16px; --radius-sm: 10px;
+    --shadow-sm: 0 1px 3px rgba(0,0,0,0.06); --shadow: 0 4px 16px rgba(0,0,0,0.07); --shadow-lg: 0 12px 40px rgba(0,0,0,0.10);
+  }
+  html { scroll-behavior: smooth; }
+  body { font-family: "Sora", sans-serif; background: var(--white); color: var(--text-primary); -webkit-font-smoothing: antialiased; }
+
+  nav { position: sticky; top: 0; z-index: 100; background: rgba(255,255,255,0.92); backdrop-filter: blur(12px); border-bottom: 1px solid var(--border-light); padding: 0 40px; height: 60px; display: flex; align-items: center; justify-content: space-between; }
+  .nav-back { display: flex; align-items: center; gap: 8px; font-size: 13px; font-weight: 500; color: var(--text-secondary); text-decoration: none; transition: color 0.15s; }
+  .nav-back:hover { color: var(--sf-blue); }
+  .nav-logo { display: flex; align-items: center; gap: 8px; text-decoration: none; }
+  .nav-logo-mark { width: 28px; height: 28px; background: linear-gradient(135deg, var(--sf-blue), var(--sf-teal)); border-radius: 7px; display: flex; align-items: center; justify-content: center; font-size: 13px; }
+  .nav-wordmark { font-size: 14px; font-weight: 600; color: var(--text-primary); }
+  .nav-wordmark span { color: var(--sf-blue); }
+
+  /* HERO */
+  .hero { background: linear-gradient(170deg, var(--sf-orange-light) 0%, var(--white) 60%); border-bottom: 1px solid var(--border); padding: 72px 40px 60px; }
+  .hero-inner { max-width: 900px; margin: 0 auto; }
+  .hero-label { font-size: 11px; font-weight: 600; font-family: "DM Mono", monospace; color: var(--sf-orange); letter-spacing: 1.5px; text-transform: uppercase; margin-bottom: 16px; display: flex; align-items: center; gap: 8px; }
+  .hero-label::before { content: ""; width: 20px; height: 2px; background: var(--sf-orange); border-radius: 2px; display: inline-block; }
+  h1 { font-size: clamp(30px, 4vw, 46px); font-weight: 700; letter-spacing: -1.5px; line-height: 1.1; margin-bottom: 16px; }
+  h1 em { font-style: normal; color: var(--sf-orange); }
+  .hero-sub { font-size: 16px; color: var(--text-secondary); line-height: 1.65; max-width: 580px; margin-bottom: 28px; }
+  .hero-stats { display: flex; gap: 0; flex-wrap: wrap; }
+  .hero-stat { display: flex; flex-direction: column; gap: 2px; padding: 12px 18px; background: var(--white); border: 1px solid var(--border); box-shadow: var(--shadow-sm); }
+  .hero-stat:first-child { border-radius: 10px 0 0 10px; }
+  .hero-stat:last-child { border-radius: 0 10px 10px 0; }
+  .hero-stat:not(:last-child) { border-right: none; }
+  .hero-stat-value { font-size: 20px; font-weight: 700; letter-spacing: -0.8px; color: var(--sf-orange); }
+  .hero-stat-label { font-size: 10.5px; color: var(--text-muted); }
+
+  /* CONTENT */
+  .content { max-width: 900px; margin: 0 auto; padding: 60px 40px 80px; }
+
+  /* PRINCIPLE CARD */
+  .principle {
+    background: var(--off-white); border: 1px solid var(--border); border-left: 4px solid var(--sf-orange);
+    border-radius: 0 var(--radius-sm) var(--radius-sm) 0; padding: 20px 24px; margin-bottom: 48px;
+  }
+  .principle-label { font-size: 10px; font-weight: 600; font-family: "DM Mono", monospace; color: var(--sf-orange); letter-spacing: 1px; text-transform: uppercase; margin-bottom: 6px; }
+  .principle p { font-size: 14px; color: var(--text-secondary); line-height: 1.6; }
+  .principle strong { color: var(--text-primary); }
+
+  /* SECTION HEADERS */
+  .sec-eyebrow { font-size: 10px; font-weight: 600; font-family: "DM Mono", monospace; color: var(--text-muted); letter-spacing: 1.5px; text-transform: uppercase; margin-bottom: 6px; }
+  .sec-title { font-size: 22px; font-weight: 700; letter-spacing: -0.7px; margin-bottom: 24px; }
+
+  /* CADENCE STEPS */
+  .cadence { display: flex; flex-direction: column; gap: 0; margin-bottom: 56px; position: relative; }
+  .cadence::before { content: ""; position: absolute; left: 18px; top: 36px; bottom: 36px; width: 1px; background: linear-gradient(to bottom, var(--sf-orange), var(--sf-blue)); opacity: 0.2; }
+  .cadence-step { display: flex; gap: 18px; padding: 14px 0; }
+  .cadence-num { width: 36px; height: 36px; border-radius: 50%; background: var(--sf-orange); color: white; font-size: 13px; font-weight: 700; display: flex; align-items: center; justify-content: center; flex-shrink: 0; z-index: 1; }
+  .cadence-body h4 { font-size: 14px; font-weight: 700; letter-spacing: -0.3px; padding-top: 8px; margin-bottom: 3px; }
+  .cadence-body p { font-size: 13px; color: var(--text-secondary); line-height: 1.6; }
+  .cadence-actor { font-size: 10px; font-weight: 600; font-family: "DM Mono", monospace; color: var(--sf-orange); letter-spacing: 0.5px; text-transform: uppercase; margin-bottom: 2px; }
+
+  /* CHAT BUBBLES — prompt cadence */
+  .chat-thread { display: flex; flex-direction: column; gap: 10px; margin-bottom: 56px; background: var(--off-white); border: 1px solid var(--border); border-radius: var(--radius); padding: 20px; }
+  .chat-msg { display: flex; gap: 10px; }
+  .chat-av { width: 28px; height: 28px; border-radius: 6px; flex-shrink: 0; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 700; color: white; }
+  .av-adam { background: linear-gradient(135deg, var(--sf-indigo), #7b5ea7); }
+  .av-claude { background: #d97757; }
+  .av-cursor { background: #000; font-size: 10px; }
+  .chat-bubble { background: var(--white); border: 1px solid var(--border); border-radius: 10px; padding: 10px 14px; font-size: 12.5px; color: var(--text-primary); line-height: 1.55; flex: 1; }
+  .chat-label { font-size: 10px; font-weight: 700; font-family: "DM Mono", monospace; margin-bottom: 3px; }
+  .label-adam { color: var(--sf-indigo); }
+  .label-claude { color: #c05a38; }
+  .label-cursor { color: var(--text-muted); }
+  .chat-bubble code { font-family: "DM Mono", monospace; font-size: 11px; background: var(--surface); padding: 1px 5px; border-radius: 4px; color: var(--sf-blue); }
+
+  /* SESSION CARDS */
+  .sessions { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; margin-bottom: 56px; }
+  .session-card { background: var(--white); border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden; box-shadow: var(--shadow-sm); }
+  .session-header { padding: 14px 16px 12px; }
+  .session-num { font-size: 10px; font-weight: 600; font-family: "DM Mono", monospace; letter-spacing: 0.8px; text-transform: uppercase; margin-bottom: 4px; }
+  .session-card:nth-child(1) .session-num { color: var(--sf-teal); }
+  .session-card:nth-child(2) .session-num { color: var(--sf-blue); }
+  .session-card:nth-child(3) .session-num { color: var(--sf-indigo); }
+  .session-card:nth-child(1) .session-header { border-left: 3px solid var(--sf-teal); }
+  .session-card:nth-child(2) .session-header { border-left: 3px solid var(--sf-blue); }
+  .session-card:nth-child(3) .session-header { border-left: 3px solid var(--sf-indigo); }
+  .session-title { font-size: 13px; font-weight: 700; letter-spacing: -0.3px; }
+  .session-meta { font-size: 11px; color: var(--text-muted); margin-top: 2px; }
+  .session-items { padding: 0 16px 14px; display: flex; flex-direction: column; gap: 5px; }
+  .session-item { font-size: 12px; color: var(--text-secondary); display: flex; align-items: flex-start; gap: 6px; }
+  .session-item::before { content: "›"; color: var(--text-muted); flex-shrink: 0; margin-top: 1px; }
+  .session-pills { display: flex; gap: 4px; padding: 10px 16px; border-top: 1px solid var(--border-light); flex-wrap: wrap; }
+  .spill { font-size: 10px; font-family: "DM Mono", monospace; padding: 2px 7px; border-radius: 4px; font-weight: 500; }
+  .spill-config { background: var(--sf-teal-light); color: var(--sf-teal); }
+  .spill-build { background: var(--sf-blue-light); color: var(--sf-blue); }
+  .spill-flow { background: var(--sf-indigo-light); color: var(--sf-indigo); }
+  .spill-data { background: var(--sf-orange-light); color: var(--sf-orange); }
+
+  /* CONFIDENCE SCORES */
+  .scores { display: flex; flex-direction: column; gap: 8px; margin-bottom: 56px; }
+  .score-row { display: flex; align-items: center; gap: 12px; }
+  .score-label { font-size: 13px; font-weight: 500; color: var(--text-primary); width: 180px; flex-shrink: 0; }
+  .score-bar-wrap { flex: 1; height: 8px; background: var(--surface); border-radius: 4px; overflow: hidden; }
+  .score-bar { height: 100%; border-radius: 4px; }
+  .bar-high { background: linear-gradient(90deg, var(--sf-green), var(--sf-teal)); }
+  .bar-med { background: linear-gradient(90deg, var(--sf-blue), var(--sf-indigo)); }
+  .bar-low { background: linear-gradient(90deg, var(--sf-orange), #e07050); }
+  .score-val { font-size: 13px; font-weight: 700; font-family: "DM Mono", monospace; color: var(--text-primary); width: 36px; text-align: right; }
+
+  /* OUTCOME BANNER */
+  .outcome { background: linear-gradient(135deg, var(--sf-orange), #c05000); border-radius: var(--radius); padding: 36px; color: white; margin-bottom: 20px; }
+  .outcome-label { font-size: 10px; font-weight: 600; font-family: "DM Mono", monospace; opacity: 0.7; letter-spacing: 1.5px; text-transform: uppercase; margin-bottom: 10px; }
+  .outcome h3 { font-size: 20px; font-weight: 700; letter-spacing: -0.5px; margin-bottom: 10px; }
+  .outcome p { font-size: 14px; opacity: 0.85; line-height: 1.6; }
+
+  footer { text-align: center; padding: 36px 40px; border-top: 1px solid var(--border-light); }
+  footer p { font-size: 12px; color: var(--text-muted); font-family: "DM Mono", monospace; margin-bottom: 4px; }
+
+  @media (max-width: 700px) {
+    nav { padding: 0 20px; }
+    .hero { padding: 50px 20px 50px; }
+    .content { padding: 40px 20px 60px; }
+    .sessions { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="index.html" class="nav-back">&#8592; SE AI Lab</a>
+  <a href="index.html" class="nav-logo">
+    <div class="nav-logo-mark">&#9889;</div>
+    <span class="nav-wordmark">SFS <span>SE AI Lab</span></span>
+  </a>
+</nav>
+
+<div class="hero">
+  <div class="hero-inner">
+    <div class="hero-label">Workflow &middot; Adam Bartos</div>
+    <h1>RFP in.<br><em>Demo out.</em></h1>
+    <p class="hero-sub">A 143-item field service RFP, decomposed, scored, built and rehearsed in ~4 days. Claude as project manager and prompt author. Cursor as builder. MCP for live org queries. Zero guessing on field names.</p>
+    <div class="hero-stats">
+      <div class="hero-stat"><span class="hero-stat-value">143</span><span class="hero-stat-label">RFP line items</span></div>
+      <div class="hero-stat"><span class="hero-stat-value">91/100</span><span class="hero-stat-label">confidence score</span></div>
+      <div class="hero-stat"><span class="hero-stat-value">6</span><span class="hero-stat-label">custom LWCs shipped</span></div>
+      <div class="hero-stat"><span class="hero-stat-value">~4 days</span><span class="hero-stat-label">RFP &rarr; rehearsal</span></div>
+    </div>
+  </div>
+</div>
+
+<div class="content">
+
+  <div class="principle">
+    <div class="principle-label">&#9733; Core principle</div>
+    <p><strong>Discover first. Build second.</strong> Every prompt Claude writes for Cursor starts with the same instruction: <strong>query the live org before writing a single line of code.</strong> This eliminates the #1 source of build failures &mdash; field name assumptions from training data that don&rsquo;t match the actual data model.</p>
+  </div>
+
+  <div class="sec-eyebrow">The process</div>
+  <div class="sec-title">The prompt cadence</div>
+  <div class="cadence">
+    <div class="cadence-step">
+      <div class="cadence-num">1</div>
+      <div class="cadence-body">
+        <div class="cadence-actor">Adam &rarr; Claude</div>
+        <h4>Describe the demo moment</h4>
+        <p>Adam explains the demo story in business terms &mdash; not the technical spec. What the customer will see, what problem it solves, what impression it should leave.</p>
+      </div>
+    </div>
+    <div class="cadence-step">
+      <div class="cadence-num">2</div>
+      <div class="cadence-body">
+        <div class="cadence-actor">Claude</div>
+        <h4>Write the Cursor prompt</h4>
+        <p>Claude translates the narrative into a precise Cursor prompt &mdash; always starting with "query the org first." No field name assumptions. No guesses from training data.</p>
+      </div>
+    </div>
+    <div class="cadence-step">
+      <div class="cadence-num">3</div>
+      <div class="cadence-body">
+        <div class="cadence-actor">Cursor + MCP</div>
+        <h4>Query the org &rarr; Build</h4>
+        <p>Cursor hits the live Salesforce org via MCP, confirms real field API names via DESCRIBE, then generates the full LWC bundle &mdash; JS, HTML, XML, Apex &mdash; using actual field names.</p>
+      </div>
+    </div>
+    <div class="cadence-step">
+      <div class="cadence-num">4</div>
+      <div class="cadence-body">
+        <div class="cadence-actor">Claude &rarr; Deploy</div>
+        <h4>Review &rarr; Deploy</h4>
+        <p>Claude audits output against the demo story. Does the logic match? Are Record Type IDs dynamic? Apex first, then LWC. Always <code>--target-org</code>. Deploy success &ne; logic works &mdash; always verify on a real record.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="sec-eyebrow">Example exchange</div>
+  <div class="sec-title">Contract Dashboard build</div>
+  <div class="chat-thread">
+    <div class="chat-msg">
+      <div class="chat-av av-adam">A</div>
+      <div class="chat-bubble">
+        <div class="chat-label label-adam">Adam &rarr; Claude</div>
+        "I need techs to see contract coverage status &mdash; full coverage, PM-only, or none &mdash; with warranty dates and division revenue breakdown."
+      </div>
+    </div>
+    <div class="chat-msg">
+      <div class="chat-av av-claude">C</div>
+      <div class="chat-bubble">
+        <div class="chat-label label-claude">Claude &rarr; Cursor</div>
+        "Before writing any code, query <code>ServiceContract</code>, <code>ContractLineItem</code>, and <code>Entitlement</code> objects via MCP. Confirm field API names for coverage type, warranty end dates, and division. <strong>Do not assume field names from training data.</strong> Then build a contractDashboard LWC with three zones..."
+      </div>
+    </div>
+    <div class="chat-msg">
+      <div class="chat-av av-cursor" style="background:#000;">&#9670;</div>
+      <div class="chat-bubble">
+        <div class="chat-label label-cursor">Cursor + MCP</div>
+        Runs <code>DESCRIBE ServiceContract</code> via MCP, discovers actual field names, then generates the full LWC bundle using real field API names.
+      </div>
+    </div>
+    <div class="chat-msg">
+      <div class="chat-av av-claude">C</div>
+      <div class="chat-bubble">
+        <div class="chat-label label-claude">Claude review</div>
+        Does the logic match Adam&rsquo;s demo story? Are field references correct? Record Type IDs dynamic? &#10003; Green light &rarr; deploy. Issue &rarr; targeted correction prompt.
+      </div>
+    </div>
+  </div>
+
+  <div class="sec-eyebrow">Build plan</div>
+  <div class="sec-title">143 requirements across 3 sessions</div>
+  <div class="sessions">
+    <div class="session-card">
+      <div class="session-header">
+        <div class="session-num">Session 1</div>
+        <div class="session-title">Job Creation &amp; Scheduling</div>
+        <div class="session-meta">38 items &middot; 60 min</div>
+      </div>
+      <div class="session-items">
+        <div class="session-item">Dispatch board &mdash; daily/weekly/monthly</div>
+        <div class="session-item">Drag-and-drop scheduling</div>
+        <div class="session-item">Map view + GPS locations</div>
+        <div class="session-item">Skill-based suggestions</div>
+        <div class="session-item">Operations dashboard (custom LWC)</div>
+        <div class="session-item">Route optimization</div>
+        <div class="session-item">Customer ETA notifications</div>
+      </div>
+      <div class="session-pills">
+        <span class="spill spill-config">22 config</span>
+        <span class="spill spill-build">4 build</span>
+        <span class="spill spill-flow">6 flow</span>
+        <span class="spill spill-data">6 data</span>
+      </div>
+    </div>
+    <div class="session-card">
+      <div class="session-header">
+        <div class="session-num">Session 2</div>
+        <div class="session-title">Contracts &amp; Billing</div>
+        <div class="session-meta">60 items &middot; 120 min</div>
+      </div>
+      <div class="session-items">
+        <div class="session-item">Contract dashboard (custom LWC)</div>
+        <div class="session-item">Multi-layered contract structure</div>
+        <div class="session-item">Warranty banner + coverage Flow</div>
+        <div class="session-item">PM compliance tracking</div>
+        <div class="session-item">Division revenue breakdown</div>
+        <div class="session-item">Renewal pipeline report</div>
+        <div class="session-item">Billing review queue</div>
+      </div>
+      <div class="session-pills">
+        <span class="spill spill-config">18 config</span>
+        <span class="spill spill-build">18 build</span>
+        <span class="spill spill-flow">12 flow</span>
+        <span class="spill spill-data">12 data</span>
+      </div>
+    </div>
+    <div class="session-card">
+      <div class="session-header">
+        <div class="session-num">Session 3</div>
+        <div class="session-title">Technician Mobile</div>
+        <div class="session-meta">45 items &middot; 90 min</div>
+      </div>
+      <div class="session-items">
+        <div class="session-item">FSL Mobile &mdash; today view + job cards</div>
+        <div class="session-item">Refrigerant form (Data Capture)</div>
+        <div class="session-item">JSA safety form</div>
+        <div class="session-item">PM checklists via WorkSteps</div>
+        <div class="session-item">Gated completion workflow</div>
+        <div class="session-item">Inventory dashboard (custom LWC)</div>
+        <div class="session-item">Full offline capability</div>
+      </div>
+      <div class="session-pills">
+        <span class="spill spill-config">20 config</span>
+        <span class="spill spill-build">8 build</span>
+        <span class="spill spill-flow">10 flow</span>
+        <span class="spill spill-data">7 data</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="sec-eyebrow">Confidence scoring</div>
+  <div class="sec-title">Final readiness by area</div>
+  <div class="scores">
+    <div class="score-row"><span class="score-label">Scheduling &amp; Dispatch</span><div class="score-bar-wrap"><div class="score-bar bar-high" style="width:92%"></div></div><span class="score-val">92</span></div>
+    <div class="score-row"><span class="score-label">Technician Mobile</span><div class="score-bar-wrap"><div class="score-bar bar-high" style="width:88%"></div></div><span class="score-val">88</span></div>
+    <div class="score-row"><span class="score-label">Inventory &amp; Parts</span><div class="score-bar-wrap"><div class="score-bar bar-high" style="width:85%"></div></div><span class="score-val">85</span></div>
+    <div class="score-row"><span class="score-label">Contract Management</span><div class="score-bar-wrap"><div class="score-bar bar-med" style="width:78%"></div></div><span class="score-val">78</span></div>
+    <div class="score-row"><span class="score-label">Billing &amp; Invoicing</span><div class="score-bar-wrap"><div class="score-bar bar-low" style="width:72%"></div></div><span class="score-val">72</span></div>
+    <div class="score-row" style="margin-top:8px; padding-top:8px; border-top:1px solid var(--border);">
+      <span class="score-label" style="font-weight:700;">Overall Readiness</span>
+      <div class="score-bar-wrap"><div class="score-bar bar-high" style="width:91%"></div></div>
+      <span class="score-val" style="color:var(--sf-green);font-size:15px;">91</span>
+    </div>
+  </div>
+
+  <div class="outcome">
+    <div class="outcome-label">The result</div>
+    <h3>All custom builds deployed. The demo can run today.</h3>
+    <p>5 remaining items: JS polish, 1 quote record, tech skill renames, 60-min rehearsal. Every custom LWC deployed and verified on real records. Platform walls escalated early and redirected &mdash; no session wasted debugging hard limits.</p>
+  </div>
+
+</div>
+
+<footer>
+  <p>Built by Adam Bartos &middot; SFS SE AI Lab &middot; 2026</p>
+  <p>SE Peers Only &middot; Internal Use</p>
+</footer>
+</body>
+</html>

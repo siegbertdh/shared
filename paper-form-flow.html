@@ -1,0 +1,529 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Paper Form → Mobile Flow · SFS SE AI Lab</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --white: #ffffff;
+    --off-white: #f8f9fc;
+    --surface: #f2f4f8;
+    --border: #e4e8f0;
+    --border-light: #eef0f5;
+    --text-primary: #0f1929;
+    --text-secondary: #4a5568;
+    --text-muted: #8a94a6;
+    --sf-blue: #0176d3;
+    --sf-blue-dark: #014486;
+    --sf-blue-light: #e8f4fd;
+    --sf-teal: #06a59a;
+    --sf-teal-light: #e6f7f6;
+    --radius: 16px;
+    --radius-sm: 10px;
+    --shadow: 0 4px 16px rgba(0,0,0,0.07), 0 1px 4px rgba(0,0,0,0.04);
+    --shadow-lg: 0 12px 40px rgba(0,0,0,0.10), 0 2px 8px rgba(0,0,0,0.05);
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: 'Sora', sans-serif;
+    background: var(--white);
+    color: var(--text-primary);
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* NAV */
+  nav {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    background: rgba(255,255,255,0.92);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--border-light);
+    padding: 0 40px;
+    height: 60px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .nav-back {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--text-secondary);
+    text-decoration: none;
+    transition: color 0.15s;
+  }
+
+  .nav-back:hover { color: var(--sf-blue); }
+
+  .nav-title {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text-primary);
+    letter-spacing: -0.2px;
+  }
+
+  .nav-badge {
+    font-size: 10px;
+    font-weight: 600;
+    font-family: 'DM Mono', monospace;
+    background: #e6f9ee;
+    color: #1a7a3f;
+    padding: 3px 9px;
+    border-radius: 20px;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+  }
+
+  /* HERO */
+  .hero {
+    background: linear-gradient(180deg, var(--sf-blue-light) 0%, var(--white) 100%);
+    border-bottom: 1px solid var(--border);
+    padding: 80px 40px;
+  }
+
+  .hero-inner {
+    max-width: 860px;
+    margin: 0 auto;
+  }
+
+  .hero-label {
+    font-size: 11px;
+    font-weight: 600;
+    font-family: 'DM Mono', monospace;
+    color: var(--sf-blue);
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    margin-bottom: 18px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .hero-label::before {
+    content: '';
+    display: inline-block;
+    width: 20px;
+    height: 2px;
+    background: var(--sf-blue);
+    border-radius: 2px;
+  }
+
+  .hero h1 {
+    font-size: clamp(32px, 4vw, 50px);
+    font-weight: 700;
+    letter-spacing: -1.5px;
+    line-height: 1.1;
+    margin-bottom: 18px;
+  }
+
+  .hero h1 em {
+    font-style: normal;
+    color: var(--sf-blue);
+  }
+
+  .hero-sub {
+    font-size: 17px;
+    color: var(--text-secondary);
+    line-height: 1.65;
+    max-width: 600px;
+    margin-bottom: 36px;
+  }
+
+  .hero-meta {
+    display: flex;
+    gap: 16px;
+    flex-wrap: wrap;
+  }
+
+  .meta-chip {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 12px;
+    color: var(--text-secondary);
+    background: var(--white);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    padding: 6px 12px;
+    font-weight: 500;
+  }
+
+  /* CONTENT */
+  .content {
+    max-width: 860px;
+    margin: 0 auto;
+    padding: 70px 40px;
+  }
+
+  /* HOW IT WORKS */
+  .steps-section {
+    margin-bottom: 70px;
+  }
+
+  .section-eyebrow {
+    font-size: 11px;
+    font-weight: 600;
+    font-family: 'DM Mono', monospace;
+    color: var(--text-muted);
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    margin-bottom: 8px;
+  }
+
+  .section-title {
+    font-size: 24px;
+    font-weight: 700;
+    letter-spacing: -0.8px;
+    margin-bottom: 32px;
+  }
+
+  .steps {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    position: relative;
+  }
+
+  .steps::before {
+    content: '';
+    position: absolute;
+    left: 19px;
+    top: 40px;
+    bottom: 40px;
+    width: 1px;
+    background: linear-gradient(to bottom, var(--sf-blue), var(--sf-teal));
+    opacity: 0.2;
+  }
+
+  .step {
+    display: flex;
+    gap: 20px;
+    padding: 20px 0;
+  }
+
+  .step-num {
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    background: var(--sf-blue);
+    color: white;
+    font-size: 14px;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    z-index: 1;
+  }
+
+  .step-content h4 {
+    font-size: 15px;
+    font-weight: 600;
+    letter-spacing: -0.3px;
+    margin-bottom: 4px;
+    padding-top: 8px;
+  }
+
+  .step-content p {
+    font-size: 14px;
+    color: var(--text-secondary);
+    line-height: 1.6;
+  }
+
+  /* WHY SECTION */
+  .why-section {
+    background: var(--off-white);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 36px;
+    margin-bottom: 70px;
+  }
+
+  .why-section h3 {
+    font-size: 14px;
+    font-weight: 700;
+    letter-spacing: -0.3px;
+    margin-bottom: 20px;
+    color: var(--text-primary);
+  }
+
+  .why-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+  }
+
+  .why-card {
+    background: var(--white);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    padding: 20px;
+  }
+
+  .why-card .why-label {
+    font-size: 10px;
+    font-weight: 600;
+    font-family: 'DM Mono', monospace;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    margin-bottom: 6px;
+    padding: 3px 8px;
+    border-radius: 4px;
+    display: inline-block;
+  }
+
+  .label-before { background: #fef3e2; color: #b45309; }
+  .label-after { background: #e6f9ee; color: #1a7a3f; }
+
+  .why-card h4 {
+    font-size: 16px;
+    font-weight: 700;
+    letter-spacing: -0.4px;
+    margin-bottom: 6px;
+  }
+
+  .why-card p {
+    font-size: 13px;
+    color: var(--text-secondary);
+    line-height: 1.6;
+  }
+
+  /* TOOLS USED */
+  .tools-used {
+    margin-bottom: 70px;
+  }
+
+  .tools-row {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+    margin-top: 20px;
+  }
+
+  .tool-badge {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: var(--white);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    padding: 10px 16px;
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--text-primary);
+  }
+
+  .tool-badge .tool-dot {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: var(--sf-blue);
+  }
+
+  /* OUTCOME CARD */
+  .outcome-card {
+    background: linear-gradient(135deg, var(--sf-blue), var(--sf-teal));
+    border-radius: var(--radius);
+    padding: 40px;
+    color: white;
+    margin-bottom: 40px;
+  }
+
+  .outcome-card .outcome-label {
+    font-size: 11px;
+    font-weight: 600;
+    font-family: 'DM Mono', monospace;
+    opacity: 0.7;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    margin-bottom: 14px;
+  }
+
+  .outcome-card h3 {
+    font-size: 22px;
+    font-weight: 700;
+    letter-spacing: -0.6px;
+    line-height: 1.3;
+    margin-bottom: 12px;
+  }
+
+  .outcome-card p {
+    font-size: 15px;
+    opacity: 0.85;
+    line-height: 1.65;
+    max-width: 560px;
+  }
+
+  /* SKILL NOTE */
+  .skill-note {
+    background: var(--off-white);
+    border: 1px solid var(--border);
+    border-left: 3px solid var(--sf-blue);
+    border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+    padding: 16px 20px;
+    margin-bottom: 40px;
+    font-size: 13px;
+    color: var(--text-secondary);
+    line-height: 1.6;
+  }
+
+  .skill-note strong {
+    color: var(--text-primary);
+  }
+
+  /* NAV RIGHT */
+  .nav-right {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  /* Footer */
+  footer {
+    text-align: center;
+    padding: 40px;
+    border-top: 1px solid var(--border-light);
+  }
+
+  footer p {
+    font-size: 12px;
+    color: var(--text-muted);
+    font-family: 'DM Mono', monospace;
+    margin-bottom: 4px;
+  }
+
+  @media (max-width: 700px) {
+    nav { padding: 0 20px; }
+    .hero { padding: 50px 20px; }
+    .content { padding: 40px 20px; }
+    .why-grid { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="index.html" class="nav-back">← SE AI Lab</a>
+  <span class="nav-title">Paper Form → Mobile Flow</span>
+  <div class="nav-right">
+    <span class="nav-badge">Live</span>
+  </div>
+</nav>
+
+<div class="hero">
+  <div class="hero-inner">
+    <div class="hero-label">Use case 01 · Siegbert</div>
+    <h1>Paper Form →<br><em>Mobile Flow.</em></h1>
+    <p class="hero-sub">
+      A Cursor AI skill that turns a photo of any paper checklist into a live Salesforce Field Service Data Capture flow — every field extracted, every component mapped, offline-ready. What used to take half a day now runs in a single session.
+    </p>
+    <div class="hero-meta">
+      <span class="meta-chip">📋 Paper form in</span>
+      <span class="meta-chip">→</span>
+      <span class="meta-chip">📱 Live mobile flow out</span>
+      <span class="meta-chip">⚡ Same session</span>
+    </div>
+  </div>
+</div>
+
+<div class="content">
+
+  <!-- HOW IT WORKS -->
+  <div class="steps-section">
+    <div class="section-eyebrow">Process</div>
+    <div class="section-title">How it works</div>
+    <div class="steps">
+      <div class="step">
+        <div class="step-num">1</div>
+        <div class="step-content">
+          <h4>Upload a photo or scan</h4>
+          <p>Take a photo of the paper form — a refrigerant log, JSA safety checklist, PM inspection form, whatever the customer uses. Upload it directly in Cursor.</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">2</div>
+        <div class="step-content">
+          <h4>AI extracts every field</h4>
+          <p>Gemini Vision reads the form image and identifies every field — labels, types, validation rules, conditional sections. You review and confirm the extraction before anything gets built.</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">3</div>
+        <div class="step-content">
+          <h4>Fields get mapped to components</h4>
+          <p>Each field maps to the right Data Capture component automatically — text inputs, picklists, signature fields, number steppers, photo capture, repeater sections. Conditional logic gets wired in too.</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">4</div>
+        <div class="step-content">
+          <h4>Flow is built, wired, deployed</h4>
+          <p>Cursor generates the full Data Capture flow and deploys it to the Salesforce org via CLI. The flow is linked to Work Orders and ready for FSL Mobile — including offline mode.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- BEFORE / AFTER -->
+  <div class="why-section">
+    <h3>The difference it makes</h3>
+    <div class="why-grid">
+      <div class="why-card">
+        <span class="why-label label-before">Before</span>
+        <h4>Half a day, manually</h4>
+        <p>Recreating a paper form as a Data Capture flow meant manually adding each field, picking components, configuring logic, and wiring to Work Orders. Repetitive, error-prone, and time-consuming for every customer.</p>
+      </div>
+      <div class="why-card">
+        <span class="why-label label-after">After</span>
+        <h4>Same session, same meeting</h4>
+        <p>Upload the form, confirm the extraction, watch it deploy. The customer can see their actual form running on mobile in the same session where they described the problem. That's a different kind of conversation.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- TOOLS -->
+  <div class="tools-used">
+    <div class="section-eyebrow">Stack</div>
+    <div class="section-title">Tools used</div>
+    <div class="tools-row">
+      <div class="tool-badge"><span class="tool-dot"></span>Cursor AI</div>
+      <div class="tool-badge"><span class="tool-dot"></span>Gemini Vision</div>
+      <div class="tool-badge"><span class="tool-dot"></span>Salesforce CLI</div>
+      <div class="tool-badge"><span class="tool-dot"></span>SF Data Capture</div>
+      <div class="tool-badge"><span class="tool-dot"></span>FSL Mobile</div>
+    </div>
+  </div>
+
+  <!-- SKILL NOTE -->
+  <div class="skill-note">
+    <strong>How the skill works:</strong> This is a reusable Cursor skill — a set of rules and prompt patterns loaded into the IDE. Once set up, any SE can point Cursor at a form image and get a buildable field extraction back in seconds. The skill knows the Salesforce Data Capture component library and FSL Mobile constraints, so it makes the right component choices automatically.
+  </div>
+
+  <!-- OUTCOME -->
+  <div class="outcome-card">
+    <div class="outcome-label">The result</div>
+    <h3>Zero to deployed flow in a fraction of the usual time.</h3>
+    <p>The customer can see their actual paper form running on mobile, in the same session where they described the problem. No second visit. No waiting. That changes the conversation.</p>
+  </div>
+
+</div>
+
+<footer>
+  <p>Built by Siegbert · SFS SE AI Lab · 2026</p>
+  <p>SE Peers Only · Internal Use</p>
+</footer>
+
+</body>
+</html>

@@ -1,0 +1,560 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Meeting Notes → Live Prototype · SFS SE AI Lab</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --white: #ffffff;
+    --off-white: #f8f9fc;
+    --surface: #f2f4f8;
+    --border: #e4e8f0;
+    --border-light: #eef0f5;
+    --text-primary: #0f1929;
+    --text-secondary: #4a5568;
+    --text-muted: #8a94a6;
+    --sf-blue: #0176d3;
+    --sf-indigo: #3a49d6;
+    --sf-indigo-dark: #2a35a0;
+    --sf-indigo-light: #eef0fd;
+    --sf-purple: #7b5ea7;
+    --sf-purple-light: #f3eff9;
+    --sf-teal: #06a59a;
+    --radius: 16px;
+    --radius-sm: 10px;
+    --shadow: 0 4px 16px rgba(0,0,0,0.07), 0 1px 4px rgba(0,0,0,0.04);
+    --shadow-lg: 0 12px 40px rgba(0,0,0,0.10), 0 2px 8px rgba(0,0,0,0.05);
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: 'Sora', sans-serif;
+    background: var(--white);
+    color: var(--text-primary);
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* NAV */
+  nav {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    background: rgba(255,255,255,0.92);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--border-light);
+    padding: 0 40px;
+    height: 60px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .nav-back {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--text-secondary);
+    text-decoration: none;
+    transition: color 0.15s;
+  }
+
+  .nav-back:hover { color: var(--sf-indigo); }
+
+  .nav-title {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text-primary);
+    letter-spacing: -0.2px;
+  }
+
+  .nav-badges {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .badge {
+    font-size: 10px;
+    font-weight: 600;
+    font-family: 'DM Mono', monospace;
+    padding: 3px 9px;
+    border-radius: 20px;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+  }
+
+  .badge-live { background: #e6f9ee; color: #1a7a3f; }
+  .badge-both { background: var(--sf-indigo-light); color: var(--sf-indigo); }
+
+  /* HERO */
+  .hero {
+    background: linear-gradient(180deg, var(--sf-indigo-light) 0%, var(--white) 100%);
+    border-bottom: 1px solid var(--border);
+    padding: 80px 40px;
+  }
+
+  .hero-inner {
+    max-width: 860px;
+    margin: 0 auto;
+  }
+
+  .hero-label {
+    font-size: 11px;
+    font-weight: 600;
+    font-family: 'DM Mono', monospace;
+    color: var(--sf-indigo);
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    margin-bottom: 18px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .hero-label::before {
+    content: '';
+    display: inline-block;
+    width: 20px;
+    height: 2px;
+    background: var(--sf-indigo);
+    border-radius: 2px;
+  }
+
+  .hero h1 {
+    font-size: clamp(32px, 4vw, 50px);
+    font-weight: 700;
+    letter-spacing: -1.5px;
+    line-height: 1.1;
+    margin-bottom: 18px;
+  }
+
+  .hero h1 em {
+    font-style: normal;
+    color: var(--sf-indigo);
+  }
+
+  .hero-sub {
+    font-size: 17px;
+    color: var(--text-secondary);
+    line-height: 1.65;
+    max-width: 600px;
+    margin-bottom: 36px;
+  }
+
+  .hero-timer {
+    display: inline-flex;
+    align-items: center;
+    gap: 12px;
+    background: var(--white);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 14px 20px;
+    box-shadow: var(--shadow);
+  }
+
+  .timer-value {
+    font-size: 36px;
+    font-weight: 700;
+    letter-spacing: -1.5px;
+    color: var(--sf-indigo);
+  }
+
+  .timer-context {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+
+  .timer-label {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text-primary);
+  }
+
+  .timer-sub {
+    font-size: 12px;
+    color: var(--text-muted);
+  }
+
+  /* FLOW DIAGRAM */
+  .flow-section {
+    max-width: 860px;
+    margin: 0 auto;
+    padding: 70px 40px 0;
+  }
+
+  .section-eyebrow {
+    font-size: 11px;
+    font-weight: 600;
+    font-family: 'DM Mono', monospace;
+    color: var(--text-muted);
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    margin-bottom: 8px;
+  }
+
+  .section-title {
+    font-size: 24px;
+    font-weight: 700;
+    letter-spacing: -0.8px;
+    margin-bottom: 32px;
+  }
+
+  .flow-steps {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 0;
+    position: relative;
+    margin-bottom: 70px;
+  }
+
+  .flow-step {
+    position: relative;
+    padding: 0 8px;
+    text-align: center;
+  }
+
+  .flow-step:not(:last-child)::after {
+    content: '→';
+    position: absolute;
+    right: -6px;
+    top: 28px;
+    font-size: 16px;
+    color: var(--border);
+    z-index: 1;
+  }
+
+  .flow-icon {
+    width: 56px;
+    height: 56px;
+    border-radius: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 22px;
+    margin: 0 auto 12px;
+  }
+
+  .flow-1 { background: #fff8e6; }
+  .flow-2 { background: var(--sf-indigo-light); }
+  .flow-3 { background: #e6f9ee; }
+  .flow-4 { background: var(--sf-indigo-light); }
+
+  .flow-actor {
+    font-size: 10px;
+    font-weight: 600;
+    font-family: 'DM Mono', monospace;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    margin-bottom: 6px;
+    color: var(--text-muted);
+  }
+
+  .flow-step h4 {
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: -0.2px;
+    color: var(--text-primary);
+    line-height: 1.35;
+  }
+
+  /* CONTENT */
+  .content {
+    max-width: 860px;
+    margin: 0 auto;
+    padding: 0 40px 70px;
+  }
+
+  /* DETAIL CARDS */
+  .detail-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 14px;
+    margin-bottom: 60px;
+  }
+
+  .detail-card {
+    background: var(--white);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 24px;
+    transition: box-shadow 0.2s;
+  }
+
+  .detail-card:hover {
+    box-shadow: var(--shadow);
+  }
+
+  .detail-icon {
+    font-size: 22px;
+    margin-bottom: 12px;
+  }
+
+  .detail-card h4 {
+    font-size: 14px;
+    font-weight: 700;
+    letter-spacing: -0.3px;
+    margin-bottom: 6px;
+    color: var(--text-primary);
+  }
+
+  .detail-card p {
+    font-size: 13px;
+    color: var(--text-secondary);
+    line-height: 1.6;
+  }
+
+  /* QUOTE */
+  .quote-block {
+    background: var(--off-white);
+    border: 1px solid var(--border);
+    border-left: 3px solid var(--sf-indigo);
+    border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+    padding: 24px 28px;
+    margin-bottom: 60px;
+    font-size: 15px;
+    color: var(--text-secondary);
+    line-height: 1.7;
+    font-style: italic;
+  }
+
+  .quote-source {
+    margin-top: 10px;
+    font-size: 12px;
+    font-style: normal;
+    color: var(--text-muted);
+    font-family: 'DM Mono', monospace;
+  }
+
+  /* TOOLS */
+  .tools-row {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    margin-top: 20px;
+    margin-bottom: 60px;
+  }
+
+  .tool-badge {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: var(--white);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    padding: 10px 16px;
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--text-primary);
+  }
+
+  .tool-dot {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: var(--sf-indigo);
+  }
+
+  /* EXAMPLE LINK */
+  .example-card {
+    background: linear-gradient(135deg, var(--sf-indigo), var(--sf-purple));
+    border-radius: var(--radius);
+    padding: 36px;
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+    text-decoration: none;
+    transition: opacity 0.2s, transform 0.2s;
+    margin-bottom: 20px;
+  }
+
+  .example-card:hover {
+    opacity: 0.95;
+    transform: translateY(-2px);
+  }
+
+  .example-label {
+    font-size: 11px;
+    font-weight: 600;
+    font-family: 'DM Mono', monospace;
+    opacity: 0.7;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    margin-bottom: 8px;
+  }
+
+  .example-card h3 {
+    font-size: 19px;
+    font-weight: 700;
+    letter-spacing: -0.5px;
+    margin-bottom: 6px;
+  }
+
+  .example-card p {
+    font-size: 14px;
+    opacity: 0.8;
+    line-height: 1.5;
+    max-width: 450px;
+  }
+
+  .example-arrow {
+    font-size: 28px;
+    opacity: 0.7;
+    flex-shrink: 0;
+  }
+
+  footer {
+    text-align: center;
+    padding: 40px;
+    border-top: 1px solid var(--border-light);
+  }
+
+  footer p {
+    font-size: 12px;
+    color: var(--text-muted);
+    font-family: 'DM Mono', monospace;
+    margin-bottom: 4px;
+  }
+
+  @media (max-width: 700px) {
+    nav { padding: 0 20px; }
+    .hero { padding: 50px 20px; }
+    .flow-section { padding: 50px 20px 0; }
+    .content { padding: 0 20px 50px; }
+    .flow-steps { grid-template-columns: repeat(2, 1fr); gap: 16px; }
+    .flow-step:not(:last-child)::after { display: none; }
+    .detail-grid { grid-template-columns: 1fr; }
+    .example-card { flex-direction: column; }
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="index.html" class="nav-back">← SE AI Lab</a>
+  <span class="nav-title">Meeting Notes → Live Prototype</span>
+  <div class="nav-badges">
+    <span class="badge badge-live">Live</span>
+    <span class="badge badge-both">Siegbert + Adam</span>
+  </div>
+</nav>
+
+<div class="hero">
+  <div class="hero-inner">
+    <div class="hero-label">Use case 02 · Siegbert & Adam</div>
+    <h1>Discovery call ends.<br><em>Prototype ships.</em></h1>
+    <p class="hero-sub">
+      After a customer call, turn your notes into a personalised interactive prototype — live on GitHub Pages before the customer's even logged off. No deck. No waiting for engineering. Just a working demo, scoped to their exact situation.
+    </p>
+    <div class="hero-timer">
+      <span class="timer-value">~15m</span>
+      <div class="timer-context">
+        <span class="timer-label">End of call → live prototype</span>
+        <span class="timer-sub">Including push to GitHub Pages</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- FLOW -->
+<div class="flow-section">
+  <div class="section-eyebrow">Workflow</div>
+  <div class="section-title">Four steps, one tool chain</div>
+
+  <div class="flow-steps">
+    <div class="flow-step">
+      <div class="flow-icon flow-1">📝</div>
+      <div class="flow-actor">You</div>
+      <h4>Finish the discovery call with rough notes</h4>
+    </div>
+    <div class="flow-step">
+      <div class="flow-icon flow-2">✨</div>
+      <div class="flow-actor">Gemini Gem</div>
+      <h4>Synthesises key themes and customer context</h4>
+    </div>
+    <div class="flow-step">
+      <div class="flow-icon flow-3">🤖</div>
+      <div class="flow-actor">Claude</div>
+      <h4>Builds a tailored interactive prototype from that context</h4>
+    </div>
+    <div class="flow-step">
+      <div class="flow-icon flow-4">🚀</div>
+      <div class="flow-actor">GitHub Pages</div>
+      <h4>Push to Pages — share the link in the follow-up</h4>
+    </div>
+  </div>
+</div>
+
+<div class="content">
+
+  <!-- DETAIL CARDS -->
+  <div class="detail-grid">
+    <div class="detail-card">
+      <div class="detail-icon">✨</div>
+      <h4>The Gemini Gem</h4>
+      <p>A custom Gemini Gem trained to read raw discovery notes and extract the structured themes a prototype needs — customer pain points, use case context, key personas, and language from their world.</p>
+    </div>
+    <div class="detail-card">
+      <div class="detail-icon">🤖</div>
+      <h4>Claude as builder</h4>
+      <p>Takes the synthesised context and generates a full HTML/React prototype — tailored copy, customer-specific scenarios, phone frame layout, and a discovery notes section. Not a template. A real build.</p>
+    </div>
+    <div class="detail-card">
+      <div class="detail-icon">📱</div>
+      <h4>Phone frame presentation</h4>
+      <p>The prototype runs inside an iPhone frame on the landing page — so the customer sees their use case on mobile, in the workflow context that matters to them. Scroll, tap, read aloud — all live.</p>
+    </div>
+    <div class="detail-card">
+      <div class="detail-icon">⚡</div>
+      <h4>GitHub Pages, instant</h4>
+      <p>One push, one URL. No Netlify account, no build pipeline, no backend. The page is live and shareable the same session. Anyone with the link can view it — no login required.</p>
+    </div>
+  </div>
+
+  <!-- QUOTE -->
+  <div class="quote-block">
+    "We've been experimenting with AI in the day-to-day workflow — here are a few things that actually worked, where we were able to save massive amounts of time."
+    <div class="quote-source">— From the Slack thread that started this</div>
+  </div>
+
+  <!-- TOOLS -->
+  <div class="section-eyebrow">Stack</div>
+  <div class="section-title">Tools used</div>
+  <div class="tools-row">
+    <div class="tool-badge"><span class="tool-dot"></span>Claude</div>
+    <div class="tool-badge"><span class="tool-dot"></span>Gemini Gem</div>
+    <div class="tool-badge"><span class="tool-dot"></span>GitHub Pages</div>
+    <div class="tool-badge"><span class="tool-dot"></span>React</div>
+    <div class="tool-badge"><span class="tool-dot"></span>Salesforce FSL</div>
+  </div>
+
+  <!-- LIVE EXAMPLE -->
+  <a href="prototypes/" target="_blank" class="example-card">
+    <div>
+      <div class="example-label">Live example</div>
+      <h3>Einstein Pre-Work Brief</h3>
+      <p>Built with this workflow from a Specialty Rental discovery session. Notes → Gemini → Claude → GitHub Pages. Live and shareable.</p>
+    </div>
+    <div class="example-arrow">↗</div>
+  </a>
+
+</div>
+
+<footer>
+  <p>Built by Siegbert & Adam · SFS SE AI Lab · 2026</p>
+  <p>SE Peers Only · Internal Use</p>
+</footer>
+
+</body>
+</html>
