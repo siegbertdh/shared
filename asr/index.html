@@ -3,32 +3,472 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>PTS 1600 VSD – Pre-Work Brief | Salesforce Field Service Einstein</title>
+  <title>Einstein Pre-Work Brief — Field Service AI</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Source+Sans+3:ital,wght@0,300;0,400;0,600;0,700;1,400&family=DM+Sans:wght@400;500;700;900&display=swap" rel="stylesheet">
   <script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.production.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.production.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/7.23.5/babel.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/lucide/0.263.1/umd/lucide.min.js"></script>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700;900&display=swap" rel="stylesheet">
   <script src="https://cdn.tailwindcss.com"></script>
+
   <style>
-    * { font-family: 'DM Sans', sans-serif; box-sizing: border-box; }
-    body { margin: 0; background: #0f172a; display: flex; justify-content: center; align-items: center; min-height: 100vh; }
-    .no-scrollbar::-webkit-scrollbar { display: none; }
-    .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
-    @keyframes spin { to { transform: rotate(360deg); } }
-    @keyframes pulse { 0%,100% { opacity:1; } 50% { opacity:.5; } }
-    .animate-spin { animation: spin 1s linear infinite; }
-    .animate-pulse { animation: pulse 2s cubic-bezier(0.4,0,0.6,1) infinite; }
+    /* ── LANDING PAGE STYLES ── */
+    :root {
+      --teal:       #007B8A;
+      --teal-dark:  #005f6b;
+      --teal-light: #e6f4f6;
+      --teal-mid:   #cceaed;
+      --text:       #1a2b30;
+      --text-mid:   #3d5a61;
+      --text-light: #6b8c94;
+      --bg:         #f5f7f7;
+      --white:      #ffffff;
+      --border:     #d4e4e7;
+      --shadow:     0 4px 24px rgba(0,123,138,0.10);
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Source Sans 3', sans-serif;
+      overflow-x: hidden;
+    }
+
+    /* NAV */
+    nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 200;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 0 56px; height: 64px;
+      background: var(--white);
+      border-bottom: 1px solid var(--border);
+      box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+    }
+    .nav-title {
+      font-size: 16px; font-weight: 700; color: var(--text);
+      letter-spacing: -0.2px;
+    }
+    .nav-title span { color: var(--teal); }
+    .nav-pill {
+      background: var(--teal-light); color: var(--teal);
+      font-size: 11px; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase;
+      padding: 5px 14px; border-radius: 999px; border: 1px solid var(--teal-mid);
+    }
+
+    /* BUTTONS */
+    .btn-primary {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: var(--teal); color: white;
+      font-size: 15px; font-weight: 700; text-decoration: none;
+      padding: 14px 32px; border-radius: 999px;
+      transition: background 0.2s, transform 0.15s, box-shadow 0.2s;
+      box-shadow: 0 4px 16px rgba(0,123,138,0.25); border: none; cursor: pointer;
+    }
+    .btn-primary:hover { background: var(--teal-dark); transform: translateY(-2px); }
+    .btn-outline {
+      display: inline-flex; align-items: center; gap: 8px;
+      border: 2px solid var(--teal); color: var(--teal);
+      font-size: 15px; font-weight: 700; text-decoration: none;
+      padding: 12px 28px; border-radius: 999px;
+      transition: background 0.2s, color 0.2s; background: none; cursor: pointer;
+    }
+    .btn-outline:hover { background: var(--teal); color: white; }
+
+    /* HERO */
+    .hero {
+      min-height: 100vh; padding: 96px 56px 80px;
+      display: grid; grid-template-columns: 1fr 1fr;
+      gap: 80px; align-items: center;
+      background: var(--white); position: relative; overflow: hidden;
+    }
+    .hero::before {
+      content: ''; position: absolute; top: 0; right: 0;
+      width: 55%; height: 100%;
+      background: radial-gradient(ellipse 80% 70% at 80% 40%, var(--teal-light) 0%, transparent 70%);
+      pointer-events: none;
+    }
+
+    .hero-eyebrow {
+      display: inline-flex; align-items: center; gap: 8px;
+      font-size: 12px; font-weight: 700; letter-spacing: 2.5px;
+      text-transform: uppercase; color: var(--teal); margin-bottom: 20px;
+    }
+    .hero-eyebrow::before { content: ''; width: 20px; height: 2px; background: var(--teal); border-radius: 2px; }
+
+    .lp-h1 {
+      font-size: clamp(36px, 4.5vw, 58px); font-weight: 700;
+      line-height: 1.1; color: var(--text); margin-bottom: 20px; letter-spacing: -0.5px;
+      font-family: 'Source Sans 3', sans-serif;
+    }
+    .lp-h1 em { font-style: normal; color: var(--teal); }
+
+    .hero-sub {
+      font-size: 18px; font-weight: 300; line-height: 1.75;
+      color: var(--text-mid); max-width: 500px; margin-bottom: 36px;
+    }
+    .hero-sub strong { color: var(--text); font-weight: 600; }
+    .hero-cta { display: flex; gap: 16px; flex-wrap: wrap; }
+
+    .hero-visual { position: relative; z-index: 2; display: flex; justify-content: center; align-items: center; }
+
+    /* PHONE SHELL */
+    @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
+
+    .phone-outer {
+      animation: float 5s ease-in-out infinite;
+      filter: drop-shadow(0 40px 60px rgba(0,123,138,0.18)) drop-shadow(0 8px 24px rgba(0,0,0,0.12));
+      position: relative; z-index: 2;
+    }
+    .phone-shell {
+      width: 290px; height: 590px;
+      background: #1a1a1a; border-radius: 48px; padding: 12px;
+      box-shadow: inset 0 0 0 1px #333, 0 0 0 1px #111;
+      position: relative;
+    }
+    .phone-shell::before {
+      content: ''; position: absolute; left: -4px; top: 100px;
+      width: 4px; height: 32px; background: #2a2a2a; border-radius: 2px 0 0 2px;
+      box-shadow: 0 44px 0 #2a2a2a, 0 80px 0 #2a2a2a;
+    }
+    .phone-shell::after {
+      content: ''; position: absolute; right: -4px; top: 130px;
+      width: 4px; height: 56px; background: #2a2a2a; border-radius: 0 2px 2px 0;
+    }
+    .phone-screen {
+      width: 100%; height: 100%; background: #000;
+      border-radius: 38px; overflow: hidden; position: relative;
+    }
+    .dynamic-island {
+      position: absolute; top: 10px; left: 50%; transform: translateX(-50%);
+      width: 88px; height: 26px; background: #000; border-radius: 20px; z-index: 100;
+      pointer-events: none;
+    }
+
+    /* The React app lives inside #proto-mount — we size it to fill the phone */
+    #proto-mount {
+      width: 100%; height: 100%;
+      overflow: hidden;
+      font-family: 'DM Sans', sans-serif;
+    }
+
+    /* Proto-specific overrides — scope inside phone */
+    #proto-mount * { font-family: 'DM Sans', sans-serif !important; }
+    #proto-mount .no-scrollbar::-webkit-scrollbar { display: none; }
+    #proto-mount .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+
+    /* OUTCOMES */
+    .outcomes {
+      background: var(--teal);
+      display: grid; grid-template-columns: repeat(3, 1fr);
+    }
+    .outcome-item { padding: 40px; text-align: center; position: relative; }
+    .outcome-item + .outcome-item::before {
+      content: ''; position: absolute; left: 0; top: 20%; bottom: 20%;
+      width: 1px; background: rgba(255,255,255,0.2);
+    }
+    .outcome-icon { font-size: 28px; margin-bottom: 12px; }
+    .outcome-title { font-size: 17px; font-weight: 700; color: white; margin-bottom: 8px; }
+    .outcome-desc { font-size: 14px; font-weight: 300; color: rgba(255,255,255,0.75); line-height: 1.6; }
+
+    /* SECTIONS */
+    .lp-section { padding: 96px 56px; }
+    .section-eyebrow {
+      font-size: 11px; font-weight: 700; letter-spacing: 2.5px;
+      text-transform: uppercase; color: var(--teal); margin-bottom: 14px;
+      display: flex; align-items: center; gap: 8px;
+    }
+    .section-eyebrow::before { content: ''; width: 14px; height: 2px; background: var(--teal); border-radius: 2px; }
+    .lp-h2 {
+      font-size: clamp(28px, 3.5vw, 42px); font-weight: 700; line-height: 1.15;
+      color: var(--text); margin-bottom: 16px; font-family: 'Source Sans 3', sans-serif;
+    }
+    .section-intro { font-size: 17px; font-weight: 300; line-height: 1.8; color: var(--text-mid); max-width: 580px; margin-bottom: 56px; }
+
+    /* HOW IT WORKS */
+    .how-section { background: var(--white); }
+    .how-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; }
+    .how-card {
+      background: var(--bg); border: 1px solid var(--border); border-radius: 16px; padding: 36px 32px;
+      transition: border-color 0.25s, box-shadow 0.25s, transform 0.25s;
+    }
+    .how-card:hover { border-color: var(--teal); box-shadow: var(--shadow); transform: translateY(-4px); }
+    .how-icon-wrap {
+      width: 52px; height: 52px; background: var(--teal-light); border-radius: 14px;
+      display: flex; align-items: center; justify-content: center; font-size: 24px; margin-bottom: 20px;
+    }
+    .how-card h3 { font-size: 17px; font-weight: 700; color: var(--text); margin-bottom: 10px; font-family: 'Source Sans 3', sans-serif; }
+    .how-card p { font-size: 14px; line-height: 1.75; color: var(--text-mid); }
+    .how-card p strong { color: var(--teal); font-weight: 600; }
+
+    /* PROTOTYPE SECTION */
+    .proto-section { background: var(--bg); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); }
+    .proto-inner { max-width: 1100px; margin: 0 auto; }
+    .proto-layout { display: grid; grid-template-columns: 310px 1fr; gap: 72px; align-items: start; }
+
+    .big-phone-shell {
+      width: 300px; height: 614px; flex-shrink: 0;
+      background: #1a1a1a; border-radius: 50px; padding: 13px;
+      box-shadow: inset 0 0 0 1px #333, 0 0 0 1px #111,
+        0 40px 80px rgba(0,0,0,0.25), 0 0 60px rgba(0,123,138,0.15);
+      position: relative;
+    }
+    .big-phone-shell::before {
+      content: ''; position: absolute; left: -4px; top: 110px;
+      width: 4px; height: 34px; background: #2a2a2a; border-radius: 2px 0 0 2px;
+      box-shadow: 0 46px 0 #2a2a2a, 0 84px 0 #2a2a2a;
+    }
+    .big-phone-shell::after {
+      content: ''; position: absolute; right: -4px; top: 140px;
+      width: 4px; height: 58px; background: #2a2a2a; border-radius: 0 2px 2px 0;
+    }
+    .big-phone-screen {
+      width: 100%; height: 100%; background: #000;
+      border-radius: 40px; overflow: hidden; position: relative;
+    }
+    .big-island {
+      position: absolute; top: 11px; left: 50%; transform: translateX(-50%);
+      width: 90px; height: 26px; background: #000; border-radius: 20px;
+      z-index: 100; pointer-events: none;
+    }
+    #proto-mount-2 {
+      width: 100%; height: 100%;
+      overflow: hidden; font-family: 'DM Sans', sans-serif;
+    }
+    #proto-mount-2 * { font-family: 'DM Sans', sans-serif !important; }
+    #proto-mount-2 .no-scrollbar::-webkit-scrollbar { display: none; }
+    #proto-mount-2 .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+
+    .callouts { display: flex; flex-direction: column; gap: 16px; padding-top: 16px; }
+    .callout {
+      display: flex; gap: 16px; align-items: flex-start;
+      padding: 20px 22px; background: var(--white);
+      border: 1px solid var(--border); border-radius: 14px;
+      transition: border-color 0.25s, box-shadow 0.25s;
+    }
+    .callout:hover { border-color: var(--teal); box-shadow: var(--shadow); }
+    .callout-icon {
+      width: 42px; height: 42px; flex-shrink: 0; background: var(--teal-light);
+      border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 20px;
+    }
+    .callout h4 { font-size: 15px; font-weight: 700; color: var(--text); margin-bottom: 4px; font-family: 'Source Sans 3', sans-serif; }
+    .callout p { font-size: 13px; color: var(--text-mid); line-height: 1.65; }
+
+    /* DISCOVERY */
+    .disc-section { background: var(--white); }
+    .disc-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 48px; align-items: start; }
+    .disc-cards { display: flex; flex-direction: column; gap: 16px; }
+    .disc-card { background: var(--bg); border: 1px solid var(--border); border-radius: 14px; overflow: hidden; transition: border-color 0.25s; }
+    .disc-card:hover { border-color: var(--teal); }
+    .disc-card-head {
+      padding: 14px 20px; background: var(--white); border-bottom: 1px solid var(--border);
+      display: flex; align-items: center; gap: 10px;
+    }
+    .disc-card-head h3 { font-size: 14px; font-weight: 700; color: var(--text); font-family: 'Source Sans 3', sans-serif; }
+    .disc-card-body { padding: 16px 20px; }
+    .disc-card-body ul { list-style: none; display: flex; flex-direction: column; gap: 9px; }
+    .disc-card-body li { font-size: 14px; color: var(--text-mid); line-height: 1.6; display: flex; gap: 10px; align-items: flex-start; }
+    .disc-card-body li::before { content: '›'; color: var(--teal); font-weight: 700; font-size: 16px; flex-shrink: 0; }
+    .disc-card-body li strong { color: var(--text); font-weight: 600; }
+
+    .quote-block {
+      background: var(--teal); border-radius: 16px; padding: 36px 40px; margin-bottom: 28px;
+      position: relative; overflow: hidden;
+    }
+    .quote-block::before {
+      content: '"'; position: absolute; top: -20px; left: 24px;
+      font-size: 120px; font-weight: 700; color: rgba(255,255,255,0.1); line-height: 1;
+    }
+    .quote-block p { font-size: 20px; font-weight: 400; font-style: italic; color: white; line-height: 1.65; margin-bottom: 20px; position: relative; z-index: 1; }
+    .quote-source { font-size: 12px; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; color: rgba(255,255,255,0.65); }
+
+    .value-cards { display: flex; flex-direction: column; gap: 12px; }
+    .value-card { display: flex; gap: 14px; align-items: flex-start; padding: 18px 20px; background: var(--bg); border: 1px solid var(--border); border-radius: 12px; }
+    .value-card-icon { width: 36px; height: 36px; flex-shrink: 0; background: var(--teal-light); border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 17px; }
+    .value-card h4 { font-size: 14px; font-weight: 700; color: var(--text); margin-bottom: 3px; font-family: 'Source Sans 3', sans-serif; }
+    .value-card p { font-size: 13px; color: var(--text-mid); line-height: 1.6; }
+
+    /* CTA */
+    .cta-section { background: var(--bg); border-top: 1px solid var(--border); padding: 96px 56px; text-align: center; }
+    .cta-section .lp-h2 { margin-bottom: 16px; }
+    .cta-section p { font-size: 17px; font-weight: 300; color: var(--text-mid); line-height: 1.8; max-width: 520px; margin: 0 auto 40px; }
+    .cta-btns { display: flex; gap: 16px; justify-content: center; flex-wrap: wrap; }
+
+    /* FOOTER */
+    footer {
+      background: var(--text); padding: 28px 56px;
+      display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 16px;
+    }
+    footer p { font-size: 13px; color: rgba(255,255,255,0.4); }
+    .footer-badge { font-size: 11px; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; color: rgba(255,255,255,0.3); border: 1px solid rgba(255,255,255,0.1); padding: 5px 12px; border-radius: 999px; }
+
+    /* ANIMATIONS */
+    @keyframes fadeUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+    .fu { opacity: 0; animation: fadeUp 0.65s ease forwards; }
+    .fu-1 { animation-delay: 0.05s; } .fu-2 { animation-delay: 0.2s; }
+    .fu-3 { animation-delay: 0.35s; } .fu-4 { animation-delay: 0.5s; }
+
+    /* RESPONSIVE */
+    @media (max-width: 960px) {
+      nav { padding: 0 24px; }
+      .hero { grid-template-columns: 1fr; padding: 88px 24px 60px; gap: 48px; }
+      .hero-visual { order: -1; }
+      .outcomes { grid-template-columns: 1fr; }
+      .outcome-item + .outcome-item::before { display: none; }
+      .outcome-item { border-top: 1px solid rgba(255,255,255,0.15); }
+      .how-grid { grid-template-columns: 1fr; }
+      .proto-layout { grid-template-columns: 1fr; justify-items: center; }
+      .disc-grid { grid-template-columns: 1fr; }
+      .lp-section { padding: 72px 24px; }
+      .cta-section { padding: 72px 24px; }
+      footer { padding: 24px; }
+    }
+
+    /* ── PROTOTYPE APP STYLES (Tailwind handles most, these fill gaps) ── */
+    @keyframes proto-spin { to { transform: rotate(360deg); } }
+    @keyframes proto-pulse { 0%,100% { opacity:1; } 50% { opacity:.5; } }
+    .proto-spin { animation: proto-spin 1s linear infinite; }
+    .proto-pulse { animation: proto-pulse 2s cubic-bezier(0.4,0,0.6,1) infinite; }
   </style>
 </head>
 <body>
-  <div id="root"></div>
 
+  <!-- NAV -->
+  <nav>
+    <div class="nav-title">Salesforce <span>Field Service Einstein</span></div>
+    <div class="nav-pill">Pre-Work Brief · AI Demo</div>
+  </nav>
+
+  <!-- HERO -->
+  <section class="hero">
+    <div style="position:relative;z-index:2">
+      <div class="hero-eyebrow fu fu-1">Salesforce Einstein · Pre-Work Brief</div>
+      <h1 class="lp-h1 fu fu-2">Every technician,<br>fully prepared<br><em>before arrival.</em></h1>
+      <p class="hero-sub fu fu-3">Einstein generates a personalised AI briefing for each work order — surfacing <strong>asset history, live IoT alerts, recommended parts</strong> and on-site fleet context, all before the first wrench turns.</p>
+      <div class="hero-cta fu fu-4">
+        <a href="#discovery" class="btn-primary">Discovery notes</a>
+      </div>
+    </div>
+
+    <div class="hero-visual fu fu-3">
+      <div class="phone-outer">
+        <div class="phone-shell">
+          <div class="phone-screen">
+            <div class="dynamic-island"></div>
+            <div id="proto-mount"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- HOW IT WORKS -->
+  <section class="lp-section how-section" id="how">
+    <div class="section-eyebrow">How It Works</div>
+    <h2 class="lp-h2">Intelligent context,<br>delivered on arrival</h2>
+    <p class="section-intro">Before the technician reaches the site, Einstein has already pulled, analysed and summarised everything relevant to today's job.</p>
+    <div class="how-grid">
+      <div class="how-card"><div class="how-icon-wrap">📋</div><h3>Work Order Intelligence</h3><p>Einstein cross-references <strong>similar historical jobs</strong> — repair patterns, failure modes and previous resolutions surface automatically.</p></div>
+      <div class="how-card"><div class="how-icon-wrap">📡</div><h3>IoT Signal Analysis</h3><p>Live sensor data from the <strong>Uptime Center</strong> feeds the brief. Pressure drops, vibration spikes and temperature anomalies flagged with context.</p></div>
+      <div class="how-card"><div class="how-icon-wrap">🎧</div><h3>Hands-Free Audio</h3><p>The brief is <strong>listenable via text-to-speech</strong> — technicians absorb it while suiting up in Chemical PPE, without touching the screen.</p></div>
+      <div class="how-card"><div class="how-icon-wrap">🏭</div><h3>On-Site Fleet Visibility</h3><p>All assets at the customer location listed for <strong>quick visual inspection</strong> — dryers, generators, pumps — proactively surfaced.</p></div>
+      <div class="how-card"><div class="how-icon-wrap">🔧</div><h3>Parts Pre-Loaded</h3><p>Recommended parts listed <strong>before the visit starts</strong>. No mid-job calls to the warehouse, no second visits for missing parts.</p></div>
+      <div class="how-card"><div class="how-icon-wrap">⚠️</div><h3>Skill-Aware Guidance</h3><p>Einstein checks technician certification. <strong>Expired certifications trigger warnings</strong> and surface the right documentation automatically.</p></div>
+    </div>
+  </section>
+
+  <!-- PROTOTYPE -->
+  <section class="lp-section proto-section" id="prototype">
+    <div class="proto-inner">
+      <div class="section-eyebrow">Interactive Prototype</div>
+      <h2 class="lp-h2" style="margin-bottom:12px">See it in action</h2>
+      <p class="section-intro">Live prototype built on a real BASF Antwerp scenario. Scroll inside the phone and tap <strong>Business Benefit</strong> at the bottom to explore the value overlay.</p>
+      <div class="proto-layout">
+        <div>
+          <div class="big-phone-shell">
+            <div class="big-phone-screen">
+              <div class="big-island"></div>
+              <div id="proto-mount-2"></div>
+            </div>
+          </div>
+        </div>
+        <div class="callouts">
+          <div class="callout"><div class="callout-icon">🚨</div><div><h4>Critical Alert Mode</h4><p>High-priority jobs flagged immediately. Einstein escalates to Unit Swap when repair is insufficient to maintain plant uptime.</p></div></div>
+          <div class="callout"><div class="callout-icon">📉</div><div><h4>IoT Anomaly Feed</h4><p>15% discharge pressure drop, Sensor 7A vibration, 98°C oil temp — all correlated and contextualised before arrival.</p></div></div>
+          <div class="callout"><div class="callout-icon">🔊</div><div><h4>Read Aloud</h4><p>Tap "Read Aloud" to hear the full brief via text-to-speech. Designed for technicians in PPE who can't look at the screen.</p></div></div>
+          <div class="callout"><div class="callout-icon">⚡</div><div><h4>Business Benefit Panel</h4><p>Tap the dark bar at the bottom to reveal the value narrative and simulate a low-skill technician scenario.</p></div></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- DISCOVERY -->
+  <section class="lp-section disc-section" id="discovery">
+    <div class="section-eyebrow">Discovery Session</div>
+    <h2 class="lp-h2">What we heard<br>from your team</h2>
+    <p class="section-intro">Key insights from the Specialty Rental discovery session — translated directly into this prototype's scope.</p>
+    <div class="disc-grid">
+      <div class="disc-cards">
+        <div class="disc-card">
+          <div class="disc-card-head"><span>📋</span><h3>Work Order Context</h3></div>
+          <div class="disc-card-body"><ul>
+            <li><strong>One asset per work order</strong> — brief scoped tightly to that unit</li>
+            <li>Surface <strong>similar historical work orders</strong> for pattern recognition</li>
+            <li>Last <strong>6 months of repair history</strong> prioritised for relevance</li>
+            <li>Maintenance vs Repair — different briefing logic per type</li>
+            <li><strong>Parts used in similar jobs</strong> shown for advance preparation</li>
+          </ul></div>
+        </div>
+        <div class="disc-card">
+          <div class="disc-card-head"><span>📡</span><h3>Fleet &amp; IoT Intelligence</h3></div>
+          <div class="disc-card-body"><ul>
+            <li><strong>All assets at same location</strong> listed for quick visual inspection</li>
+            <li>Uptime Center IoT data — <strong>critical for repair work orders</strong></li>
+            <li>Sensor anomalies surfaced with context, not raw data dumps</li>
+            <li>If repair fails → <strong>Einstein recommends Unit Swap</strong> to protect uptime</li>
+          </ul></div>
+        </div>
+        <div class="disc-card">
+          <div class="disc-card-head"><span>📁</span><h3>Technical Documentation</h3></div>
+          <div class="disc-card-body"><ul>
+            <li>SharePoint integration for <strong>service manuals and technical docs</strong></li>
+            <li>Surfaced automatically when skill gaps are detected</li>
+            <li>Linked to specific asset model and fault type</li>
+          </ul></div>
+        </div>
+      </div>
+      <div>
+        <div class="quote-block">
+          <p>"Even a 1% change in machine downtime would be significant. That's the metric we need to tie this to."</p>
+          <div class="quote-source">— Specialty Rental · Discovery Session</div>
+        </div>
+        <div class="value-cards">
+          <div class="value-card"><div class="value-card-icon">⬇️</div><div><h4>Reduced Asset Downtime</h4><p>Faster diagnosis, fewer escalations, better first-time fix rate.</p></div></div>
+          <div class="value-card"><div class="value-card-icon">⚡</div><div><h4>Technician Productivity</h4><p>Brief assembles automatically — ready before the van arrives on site.</p></div></div>
+          <div class="value-card"><div class="value-card-icon">📱</div><div><h4>Built for Mobile</h4><p>Integrates directly into the existing Salesforce Field Service mobile workflow.</p></div></div>
+          <div class="value-card"><div class="value-card-icon">🔁</div><div><h4>Fewer Second Visits</h4><p>Parts recommended before the job starts — protecting margin and customer trust.</p></div></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER / DISCLAIMER -->
+  <footer>
+    <p>Built with Salesforce Einstein · Field Service · Agentforce</p>
+    <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap">
+      <div style="width:8px;height:8px;border-radius:50%;background:#f59e0b;flex-shrink:0"></div>
+      <span style="font-size:12px;color:rgba(255,255,255,0.5);max-width:520px;line-height:1.5">
+        <strong style="color:rgba(255,255,255,0.7)">Demo Prototype.</strong> This is an early-stage concept built to illustrate the capability. It uses fictional scenario data and does not connect to live Salesforce systems, IoT feeds, or real asset records. Not intended as a representation of final product functionality or design.
+      </span>
+    </div>
+    <div class="footer-badge">Concept · Not Final Product</div>
+  </footer>
+
+  <!-- ── PROTOTYPE REACT APP ── -->
   <script type="text/babel">
-    const { useState, useRef } = React;
+    const { useState } = React;
 
-    // Inline SVG icon components (subset of lucide)
     const Icon = ({ d, size = 20, className = '', strokeWidth = 2, fill = 'none' }) => (
       <svg width={size} height={size} viewBox="0 0 24 24" fill={fill} stroke="currentColor" strokeWidth={strokeWidth} strokeLinecap="round" strokeLinejoin="round" className={className}>
         {Array.isArray(d) ? d.map((path, i) => <path key={i} d={path} />) : <path d={d} />}
@@ -53,7 +493,7 @@
       Battery: ({size=12}) => <Icon size={size} d={["M17 7H7a2 2 0 00-2 2v6a2 2 0 002 2h10a2 2 0 002-2V9a2 2 0 00-2-2z","M22 11v2"]} />,
     };
 
-    const App = () => {
+    const ProtoApp = () => {
       const [view, setView] = useState('brief');
       const [skillLevel, setSkillLevel] = useState('standard');
       const [isSpeaking, setIsSpeaking] = useState(false);
@@ -62,8 +502,7 @@
         title: "PTS 1600 VSD (Oil-Free Air)",
         criticality: "Today's job is critical, please read carefully.",
         overview: "You are scheduled at the BASF Antwerp site this morning to address a sudden pressure loss on the primary rental air backup unit.",
-        asset: "PTS-1600-VSD-T4F",
-        serial: "AC-RT-88421",
+        asset: "PTS-1600-VSD-T4F", serial: "AC-RT-88421",
         performWork: "The unit is currently in 'Limp Mode'. You must perform a full inspection of the 2nd stage seals. Ensure you follow Site Safety Protocol Level 4 (Chemical PPE). If vibration persists after seal replacement, Einstein recommends escalating for a Unit Swap to maintain plant uptime.",
         iotAnomaly: "📉 Sudden 15% drop in discharge pressure detected. High vibration on 2nd stage element (Sensor 7A). Oil temp peaking at 98°C.",
         recentHistory: "🛠️ Mar 02: Hose coupling replacement. Feb 12: Standard 500h service completed.",
@@ -72,189 +511,124 @@
           "🔍 1x QAS 250 Generator (SN: 112) - Check fuel levels for client.",
           "🔍 2x PNS 1250 High-Pressure Pumps - Visual check on hoses."
         ],
-        parts: [
-          { name: "2nd Stage Seal Kit", qty: "1" },
-          { name: "Synthetic Oil (Rotary)", qty: "5L" },
-          { name: "Coupling O-Ring", qty: "2" }
-        ],
+        parts: [{ name: "2nd Stage Seal Kit", qty: "1" }, { name: "Synthetic Oil (Rotary)", qty: "5L" }, { name: "Coupling O-Ring", qty: "2" }],
         benefit: "Natural sounding audio and scannable lists allow technicians to process complex asset intelligence without taking their eyes off the equipment during high-pressure repairs."
       };
 
       const toggleSkill = () => {
         setView('loading');
-        setTimeout(() => {
-          setSkillLevel(s => s === 'standard' ? 'low' : 'standard');
-          setView('brief');
-        }, 800);
+        setTimeout(() => { setSkillLevel(s => s === 'standard' ? 'low' : 'standard'); setView('brief'); }, 800);
       };
 
       const handleReadAloud = () => {
-        if (isSpeaking) {
-          window.speechSynthesis.cancel();
-          setIsSpeaking(false);
-          return;
-        }
-
-        if (!window.speechSynthesis) {
-          alert('Sorry, your browser does not support text-to-speech.');
-          return;
-        }
-
-        const cleanText = (t) => t.replace(/[\u{1F600}-\u{1F64F}\u{1F300}-\u{1F5FF}\u{1F680}-\u{1F6FF}\u{1F1E0}-\u{1F1FF}\u{2600}-\u{26FF}\u{2700}-\u{27BF}]/gu, '');
-
-        const textToRead = `
-          Pre-work brief for ${scenario.title}.
-          ${cleanText(scenario.criticality)}
-          Overview: ${cleanText(scenario.overview)}
-          Work instruction: ${cleanText(scenario.performWork)}
-          IoT alerts: ${cleanText(scenario.iotAnomaly)}
-          Repair history: ${cleanText(scenario.recentHistory)}
-          Other assets on site for visual inspection: ${scenario.onSiteFleet.map(i => cleanText(i)).join('. ')}
-        `;
-
-        const utterance = new SpeechSynthesisUtterance(textToRead);
-        utterance.rate = 0.95;
-        utterance.pitch = 1;
-        utterance.volume = 1;
-
-        // Try to pick a good English voice
+        if (isSpeaking) { window.speechSynthesis.cancel(); setIsSpeaking(false); return; }
+        if (!window.speechSynthesis) return;
+        const clean = t => t.replace(/[\u{1F600}-\u{1F64F}\u{1F300}-\u{1F5FF}\u{1F680}-\u{1F6FF}\u{1F1E0}-\u{1F1FF}\u{2600}-\u{26FF}\u{2700}-\u{27BF}]/gu, '');
+        const text = `Pre-work brief for ${scenario.title}. ${clean(scenario.criticality)} Overview: ${clean(scenario.overview)} Work instruction: ${clean(scenario.performWork)} IoT alerts: ${clean(scenario.iotAnomaly)} History: ${clean(scenario.recentHistory)} Other assets: ${scenario.onSiteFleet.map(i => clean(i)).join('. ')}`;
+        const u = new SpeechSynthesisUtterance(text);
+        u.rate = 0.95; u.pitch = 1; u.volume = 1;
         const voices = window.speechSynthesis.getVoices();
-        const preferred = voices.find(v => v.lang.startsWith('en') && v.name.toLowerCase().includes('google'))
-          || voices.find(v => v.lang === 'en-GB')
-          || voices.find(v => v.lang.startsWith('en'))
-          || voices[0];
-        if (preferred) utterance.voice = preferred;
-
-        utterance.onend = () => setIsSpeaking(false);
-        utterance.onerror = () => setIsSpeaking(false);
-
+        const v = voices.find(v => v.lang.startsWith('en') && v.name.toLowerCase().includes('google')) || voices.find(v => v.lang === 'en-GB') || voices.find(v => v.lang.startsWith('en')) || voices[0];
+        if (v) u.voice = v;
+        u.onend = () => setIsSpeaking(false);
+        u.onerror = () => setIsSpeaking(false);
         setIsSpeaking(true);
-        window.speechSynthesis.speak(utterance);
+        window.speechSynthesis.speak(u);
       };
 
-      const StatusBar = () => (
-        <div className="flex justify-between items-center px-6 py-2 text-xs font-bold text-white bg-pink-700">
-          <span>9:41</span>
-          <div className="flex gap-1 items-center">
-            <icons.Signal />
-            <icons.Wifi />
-            <icons.Battery />
-          </div>
-        </div>
-      );
-
-      const BottomNav = () => (
-        <div className="flex justify-around items-center border-t py-2 bg-white sticky bottom-0 z-10">
-          {[
-            { Icon: icons.Calendar, label: 'Schedule', active: true },
-            { Icon: icons.Box, label: 'Inventory' },
-            { Icon: icons.LayoutDashboard, label: 'Dashboard' },
-            { Icon: icons.Bell, label: 'Notifications' },
-            { Icon: icons.User, label: 'Profile' },
-          ].map(({ Icon, label, active }) => (
-            <div key={label} className={`flex flex-col items-center ${active ? 'text-pink-700' : 'text-gray-400'}`}>
-              <Icon size={20} />
-              <span className="text-[10px]">{label}</span>
-            </div>
-          ))}
-        </div>
-      );
-
       return (
-        <div style={{ fontFamily: "'DM Sans', sans-serif" }} className="flex flex-col h-screen max-w-sm mx-auto bg-gray-100 shadow-2xl overflow-hidden relative" >
-          <StatusBar />
+        <div style={{display:'flex',flexDirection:'column',height:'100%',maxWidth:'100%',background:'#f1f5f9',overflow:'hidden',fontFamily:"'DM Sans',sans-serif"}}>
+          {/* Status Bar */}
+          <div style={{display:'flex',justifyContent:'space-between',alignItems:'center',padding:'8px 16px',fontSize:'11px',fontWeight:'700',color:'white',background:'#be185d',flexShrink:0}}>
+            <span>9:41</span>
+            <div style={{display:'flex',gap:'4px',alignItems:'center'}}><icons.Signal /><icons.Wifi /><icons.Battery /></div>
+          </div>
 
           {view === 'loading' && (
-            <div className="flex-1 flex flex-col items-center justify-center bg-white p-8 text-center">
-              <div className="relative mb-6">
-                <div className="w-16 h-16 rounded-full border-4 border-pink-100 border-t-pink-600 animate-spin"></div>
-                <div className="absolute inset-0 flex items-center justify-center">
-                  <icons.Zap size={24} className="text-pink-600 animate-pulse" />
+            <div style={{flex:1,display:'flex',flexDirection:'column',alignItems:'center',justifyContent:'center',background:'white',padding:'32px',textAlign:'center'}}>
+              <div style={{position:'relative',marginBottom:'24px'}}>
+                <div style={{width:'64px',height:'64px',borderRadius:'50%',border:'4px solid #fce7f3',borderTopColor:'#db2777'}} className="proto-spin"></div>
+                <div style={{position:'absolute',inset:0,display:'flex',alignItems:'center',justifyContent:'center'}}>
+                  <icons.Zap size={24} className="proto-pulse" style={{color:'#db2777'}} />
                 </div>
               </div>
-              <p className="text-slate-500 text-sm">Einstein is updating context...</p>
+              <p style={{color:'#64748b',fontSize:'14px'}}>Einstein is updating context...</p>
             </div>
           )}
 
           {(view === 'brief' || view === 'benefit') && (
-            <div className="flex-1 flex flex-col bg-slate-900 relative overflow-hidden">
-              <div className="absolute top-0 w-full p-4 opacity-40">
-                <div className="flex items-center mb-4 text-white">
+            <div style={{flex:1,display:'flex',flexDirection:'column',background:'#0f172a',position:'relative',overflow:'hidden'}}>
+              {/* BG hint */}
+              <div style={{position:'absolute',top:0,width:'100%',padding:'12px',opacity:0.4,color:'white'}}>
+                <div style={{display:'flex',alignItems:'center',gap:'8px'}}>
                   <icons.ChevronLeft />
-                  <div className="flex-1">
-                    <p className="text-[10px] uppercase font-bold">Work Order</p>
-                    <h2 className="text-lg font-bold truncate">PTS 1600 VSD...</h2>
-                  </div>
+                  <div><p style={{fontSize:'9px',textTransform:'uppercase',fontWeight:'700',marginBottom:'2px'}}>Work Order</p><p style={{fontSize:'14px',fontWeight:'700'}}>PTS 1600 VSD...</p></div>
                 </div>
               </div>
 
-              <div className="mt-8 bg-white rounded-t-3xl flex-1 flex flex-col shadow-2xl z-10 overflow-hidden">
-                <div className="p-6 pb-2">
-                  <button className="p-1 hover:bg-slate-100 rounded-full transition-colors">
-                    <icons.X size={24} />
+              {/* Modal sheet */}
+              <div style={{marginTop:'32px',background:'white',borderRadius:'28px 28px 0 0',flex:1,display:'flex',flexDirection:'column',overflow:'hidden',position:'relative',zIndex:10}}>
+                <div style={{padding:'16px 20px 8px'}}>
+                  <button style={{padding:'4px',borderRadius:'50%',border:'none',background:'transparent',cursor:'pointer'}}>
+                    <icons.X size={20} />
                   </button>
                 </div>
 
-                <div className="flex-1 overflow-y-auto no-scrollbar px-6 pb-32">
-                  <div className="mb-6">
-                    <h1 className="text-2xl font-black text-slate-900 mb-2">{scenario.title}</h1>
-                    <p className="text-slate-800 text-sm font-medium leading-tight mb-3 italic underline decoration-pink-200 underline-offset-4">{scenario.criticality}</p>
-                    {skillLevel === 'low' && (
-                      <p className="text-xs font-bold text-orange-700 bg-orange-50 p-2 rounded-lg border border-orange-100 mb-4">
-                        ⚠️ Skill Warning: Technician certification for PTS VSD units has expired. Please refer to SharePoint manuals attached below.
-                      </p>
-                    )}
-                  </div>
+                <div style={{flex:1,overflowY:'auto',padding:'0 20px 120px'}} className="no-scrollbar">
+                  <h1 style={{fontSize:'20px',fontWeight:'900',color:'#0f172a',marginBottom:'8px'}}>{scenario.title}</h1>
+                  <p style={{fontSize:'12px',fontWeight:'600',color:'#1e293b',marginBottom:'12px',fontStyle:'italic',textDecoration:'underline',textDecorationColor:'#fbcfe8'}}>{scenario.criticality}</p>
 
-                  <div className="mb-6">
-                    <h2 className="text-lg font-bold text-slate-900 mb-2">Overview:</h2>
-                    <p className="text-sm text-slate-700 leading-relaxed">{scenario.overview}</p>
-                  </div>
-
-                  <div className="mb-6">
-                    <h2 className="text-lg font-bold text-slate-900 mb-2">Perform Work:</h2>
-                    <p className="text-sm text-slate-700 leading-relaxed">
-                      The work will be on an <strong>Atlas Copco {scenario.asset}</strong>, serial number <strong>{scenario.serial}</strong>. {scenario.performWork}
+                  {skillLevel === 'low' && (
+                    <p style={{fontSize:'11px',fontWeight:'700',color:'#c2410c',background:'#fff7ed',padding:'8px',borderRadius:'8px',border:'1px solid #fed7aa',marginBottom:'12px'}}>
+                      ⚠️ Skill Warning: Technician certification for PTS VSD units has expired. Please refer to SharePoint manuals attached below.
                     </p>
+                  )}
+
+                  <div style={{marginBottom:'16px'}}>
+                    <h2 style={{fontSize:'15px',fontWeight:'700',color:'#0f172a',marginBottom:'6px'}}>Overview:</h2>
+                    <p style={{fontSize:'13px',color:'#334155',lineHeight:'1.6'}}>{scenario.overview}</p>
                   </div>
 
-                  <div className="mb-8 space-y-6">
+                  <div style={{marginBottom:'16px'}}>
+                    <h2 style={{fontSize:'15px',fontWeight:'700',color:'#0f172a',marginBottom:'6px'}}>Perform Work:</h2>
+                    <p style={{fontSize:'13px',color:'#334155',lineHeight:'1.6'}}>The work will be on an <strong>Atlas Copco {scenario.asset}</strong>, serial number <strong>{scenario.serial}</strong>. {scenario.performWork}</p>
+                  </div>
+
+                  <div style={{marginBottom:'16px',display:'flex',flexDirection:'column',gap:'12px'}}>
                     <div>
-                      <h3 className="text-sm font-bold text-slate-900 mb-1">IoT Anomalies:</h3>
-                      <p className="text-sm text-slate-700 leading-relaxed">{scenario.iotAnomaly}</p>
+                      <h3 style={{fontSize:'12px',fontWeight:'700',color:'#0f172a',marginBottom:'4px'}}>IoT Anomalies:</h3>
+                      <p style={{fontSize:'12px',color:'#334155',lineHeight:'1.6'}}>{scenario.iotAnomaly}</p>
                     </div>
                     <div>
-                      <h3 className="text-sm font-bold text-slate-900 mb-1">Last 6 Month Repair History:</h3>
-                      <p className="text-sm text-slate-700 leading-relaxed">{scenario.recentHistory}</p>
+                      <h3 style={{fontSize:'12px',fontWeight:'700',color:'#0f172a',marginBottom:'4px'}}>Last 6 Month Repair History:</h3>
+                      <p style={{fontSize:'12px',color:'#334155',lineHeight:'1.6'}}>{scenario.recentHistory}</p>
                     </div>
                     <div>
-                      <h3 className="text-sm font-bold text-slate-900 mb-1">Other assets on site for quick visual inspection:</h3>
-                      <ul className="text-sm text-slate-700 space-y-2 mt-2">
-                        {scenario.onSiteFleet.map((item, idx) => (
-                          <li key={idx} className="flex gap-2">
-                            <span className="text-slate-400">•</span>
-                            <span>{item}</span>
-                          </li>
-                        ))}
-                      </ul>
+                      <h3 style={{fontSize:'12px',fontWeight:'700',color:'#0f172a',marginBottom:'6px'}}>Other assets on site:</h3>
+                      {scenario.onSiteFleet.map((item, idx) => (
+                        <div key={idx} style={{display:'flex',gap:'8px',marginBottom:'4px'}}>
+                          <span style={{color:'#94a3b8',fontSize:'12px'}}>•</span>
+                          <span style={{fontSize:'12px',color:'#334155'}}>{item}</span>
+                        </div>
+                      ))}
                     </div>
                   </div>
 
-                  <div className="mb-8">
-                    <h2 className="text-lg font-bold text-slate-900 mb-3">Parts Breakdown</h2>
-                    <div className="border border-slate-200 rounded-xl overflow-hidden">
-                      <table className="w-full text-sm">
+                  <div style={{marginBottom:'16px'}}>
+                    <h2 style={{fontSize:'15px',fontWeight:'700',color:'#0f172a',marginBottom:'10px'}}>Parts Breakdown</h2>
+                    <div style={{border:'1px solid #e2e8f0',borderRadius:'10px',overflow:'hidden'}}>
+                      <table style={{width:'100%',fontSize:'12px',borderCollapse:'collapse'}}>
                         <thead>
-                          <tr className="bg-slate-50 border-b border-slate-200">
-                            <th className="p-3 text-left font-bold text-slate-900">Part</th>
-                            <th className="p-3 text-left font-bold text-slate-900">Quantity</th>
+                          <tr style={{background:'#f8fafc',borderBottom:'1px solid #e2e8f0'}}>
+                            <th style={{padding:'8px 12px',textAlign:'left',fontWeight:'700',color:'#0f172a'}}>Part</th>
+                            <th style={{padding:'8px 12px',textAlign:'left',fontWeight:'700',color:'#0f172a'}}>Qty</th>
                           </tr>
                         </thead>
-                        <tbody className="divide-y divide-slate-100">
+                        <tbody>
                           {scenario.parts.map((p, i) => (
-                            <tr key={i}>
-                              <td className="p-3 text-slate-700">{p.name}</td>
-                              <td className="p-3 text-slate-900 font-medium">{p.qty}</td>
+                            <tr key={i} style={{borderTop: i>0 ? '1px solid #f1f5f9' : 'none'}}>
+                              <td style={{padding:'8px 12px',color:'#334155'}}>{p.name}</td>
+                              <td style={{padding:'8px 12px',color:'#0f172a',fontWeight:'600'}}>{p.qty}</td>
                             </tr>
                           ))}
                         </tbody>
@@ -262,54 +636,61 @@
                     </div>
                   </div>
 
-                  <button onClick={handleReadAloud} className={`w-full py-4 border-2 rounded-xl flex justify-center items-center gap-2 font-bold transition-all mb-4 ${isSpeaking ? 'border-cyan-600 bg-cyan-50 text-cyan-700' : 'border-cyan-600 text-cyan-600 hover:bg-cyan-50'}`}>
-                    {isSpeaking ? (<><icons.Square size={20} className="fill-cyan-700" /> Stop Reading</>) : (<><icons.Volume2 size={20} /> Read Aloud</>)}
+                  <button onClick={handleReadAloud} style={{width:'100%',padding:'12px',border:'2px solid #0891b2',borderRadius:'10px',display:'flex',justifyContent:'center',alignItems:'center',gap:'8px',fontWeight:'700',fontSize:'13px',cursor:'pointer',marginBottom:'10px',background: isSpeaking ? '#ecfeff' : 'white',color:'#0891b2',transition:'all 0.2s'}}>
+                    {isSpeaking ? (<><icons.Square size={18} style={{fill:'#0891b2'}} /> Stop Reading</>) : (<><icons.Volume2 size={18} /> Read Aloud</>)}
                   </button>
 
-                  <button className="w-full py-5 bg-cyan-600 text-white rounded-xl flex justify-center items-center gap-2 font-black shadow-lg shadow-cyan-200 active:scale-95 transition-all mb-12">
-                    <icons.ClipboardCheck size={24} />
+                  <button style={{width:'100%',padding:'14px',background:'#0891b2',color:'white',borderRadius:'10px',display:'flex',justifyContent:'center',alignItems:'center',gap:'8px',fontWeight:'900',fontSize:'13px',border:'none',cursor:'pointer',boxShadow:'0 4px 16px rgba(8,145,178,0.3)'}}>
+                    <icons.ClipboardCheck size={20} />
                     START SERVICE
                   </button>
                 </div>
               </div>
 
-              <BottomNav />
-            </div>
-          )}
+              {/* Bottom Nav */}
+              <div style={{position:'absolute',bottom:0,left:0,right:0,display:'flex',justifyContent:'space-around',alignItems:'center',borderTop:'1px solid #e2e8f0',padding:'8px 0',background:'white',zIndex:20}}>
+                {[{I:icons.Calendar,l:'Schedule',a:true},{I:icons.Box,l:'Inventory'},{I:icons.LayoutDashboard,l:'Dashboard'},{I:icons.Bell,l:'Alerts'},{I:icons.User,l:'Profile'}].map(({I,l,a})=>(
+                  <div key={l} style={{display:'flex',flexDirection:'column',alignItems:'center',color: a ? '#be185d' : '#94a3b8'}}>
+                    <I size={18} /><span style={{fontSize:'9px',marginTop:'2px'}}>{l}</span>
+                  </div>
+                ))}
+              </div>
 
-          {/* Business Benefit overlay */}
-          {(view === 'brief' || view === 'benefit') && (
-            <div className="absolute bottom-20 right-4 left-4 z-50">
-              {view === 'brief' ? (
-                <button onClick={() => setView('benefit')} className="w-full bg-slate-900 text-white p-3 rounded-2xl shadow-2xl flex items-center justify-between border border-pink-500/30">
-                  <div className="flex items-center gap-2 px-2">
-                    <icons.Zap size={16} className="text-pink-400" />
-                    <span className="text-[10px] font-black uppercase tracking-widest">Business Benefit</span>
+              {/* Business Benefit */}
+              <div style={{position:'absolute',bottom:'60px',left:'12px',right:'12px',zIndex:30}}>
+                {view === 'brief' ? (
+                  <button onClick={() => setView('benefit')} style={{width:'100%',background:'#0f172a',color:'white',padding:'10px 14px',borderRadius:'14px',display:'flex',alignItems:'center',justifyContent:'space-between',border:'1px solid rgba(236,72,153,0.3)',cursor:'pointer',boxShadow:'0 8px 24px rgba(0,0,0,0.4)'}}>
+                    <div style={{display:'flex',alignItems:'center',gap:'8px'}}>
+                      <icons.Zap size={14} style={{color:'#f472b6',fill:'#f472b6'}} />
+                      <span style={{fontSize:'9px',fontWeight:'900',textTransform:'uppercase',letterSpacing:'2px'}}>Business Benefit</span>
+                    </div>
+                    <span style={{transform:'rotate(180deg)',display:'inline-block',fontSize:'14px'}}>‹</span>
+                  </button>
+                ) : (
+                  <div style={{background:'#0f172a',color:'white',padding:'20px',borderRadius:'20px',border:'2px solid rgba(236,72,153,0.4)',boxShadow:'0 16px 40px rgba(0,0,0,0.5)'}}>
+                    <div style={{display:'flex',justifyContent:'space-between',alignItems:'center',marginBottom:'12px'}}>
+                      <span style={{fontSize:'10px',fontWeight:'900',color:'#f472b6',textTransform:'uppercase',letterSpacing:'2px'}}>Value Insight</span>
+                      <button onClick={() => setView('brief')} style={{color:'#64748b',background:'transparent',border:'none',cursor:'pointer',fontSize:'16px'}}>✕</button>
+                    </div>
+                    <p style={{fontSize:'12px',lineHeight:'1.7',color:'#cbd5e1',marginBottom:'16px'}}>{scenario.benefit}</p>
+                    <div style={{borderTop:'1px solid #1e293b',paddingTop:'12px'}}>
+                      <button onClick={toggleSkill} style={{width:'100%',padding:'10px',background:'#1e293b',borderRadius:'10px',fontSize:'9px',fontWeight:'700',color:'white',border:'1px solid #334155',cursor:'pointer',display:'flex',alignItems:'center',justifyContent:'center',gap:'8px'}}>
+                        <icons.RefreshCw size={12} />
+                        {skillLevel === 'standard' ? "SIMULATE LOW-SKILL TECHNICIAN" : "RESET TO EXPERT"}
+                      </button>
+                    </div>
                   </div>
-                  <span style={{ transform: 'rotate(180deg)', display: 'inline-block' }}>‹</span>
-                </button>
-              ) : (
-                <div className="bg-slate-900 text-white p-6 rounded-3xl shadow-2xl border-2 border-pink-500/50">
-                  <div className="flex justify-between items-center mb-4">
-                    <span className="text-xs font-black text-pink-400 uppercase tracking-widest">Value Insight</span>
-                    <button onClick={() => setView('brief')} className="text-slate-400 p-1">✕</button>
-                  </div>
-                  <p className="text-sm leading-relaxed mb-6 text-slate-200">{scenario.benefit}</p>
-                  <div className="space-y-3 pt-4 border-t border-slate-800">
-                    <button onClick={toggleSkill} className="w-full p-3 bg-slate-800 rounded-xl text-[10px] font-bold hover:bg-slate-700 flex items-center justify-center gap-2 transition-colors border border-slate-700">
-                      <icons.RefreshCw size={14} />
-                      {skillLevel === 'standard' ? "SIMULATE LOW-SKILL TECHNICIAN" : "RESET TO EXPERT"}
-                    </button>
-                  </div>
-                </div>
-              )}
+                )}
+              </div>
             </div>
           )}
         </div>
       );
     };
 
-    ReactDOM.render(<App />, document.getElementById('root'));
+    // Mount the same app into BOTH phone containers
+    ReactDOM.render(<ProtoApp />, document.getElementById('proto-mount'));
+    ReactDOM.render(<ProtoApp />, document.getElementById('proto-mount-2'));
   </script>
 </body>
 </html>
